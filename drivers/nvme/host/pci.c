@@ -3023,6 +3023,8 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	struct nvme_dev *dev;
 	int result = -ENOMEM;
 
+	pr_info("%s - admin_timeout = %d\n", __func__, admin_timeout);
+
 	dev = nvme_pci_alloc_dev(pdev, id);
 	if (!dev)
 		return -ENOMEM;

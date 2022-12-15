@@ -40,7 +40,7 @@ struct nvme_ns_info {
 	bool is_ready;
 };
 
-unsigned int admin_timeout = 60;
+unsigned int admin_timeout = 10;
 module_param(admin_timeout, uint, 0644);
 MODULE_PARM_DESC(admin_timeout, "timeout in seconds for admin commands");
 EXPORT_SYMBOL_GPL(admin_timeout);

@@ -6150,7 +6150,7 @@ static int regulator_late_cleanup(struct device *dev, void *data)
 	if (_regulator_is_enabled(rdev) <= 0)
 		goto unlock;
 
-	if (have_full_constraints()) {
+	if (false && have_full_constraints()) {
 		/* We log since this may kill the system if it goes
 		 * wrong.
 		 */

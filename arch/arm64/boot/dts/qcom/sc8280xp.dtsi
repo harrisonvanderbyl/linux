@@ -2490,7 +2490,7 @@
 			        #sound-dai-cells = <0>;
 
 				operating-points-v2 = <&mdss0_dp0_opp_table>;
-			        power-domains = <&rpmhpd SC8280XP_CX>;
+			        power-domains = <&rpmhpd SC8280XP_MMCX>;
 
 				status = "disabled";
 
@@ -2563,7 +2563,7 @@
 			        #sound-dai-cells = <0>;
 
 				operating-points-v2 = <&mdss0_dp1_opp_table>;
-			        power-domains = <&rpmhpd SC8280XP_CX>;
+			        power-domains = <&rpmhpd SC8280XP_MMCX>;
 
 				status = "disabled";
 

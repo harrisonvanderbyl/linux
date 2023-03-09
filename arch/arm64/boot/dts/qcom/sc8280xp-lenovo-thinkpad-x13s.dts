@@ -1253,7 +1253,7 @@
 		cts-pins {
 			pins = "gpio121";
 			function = "qup2";
-			bias-pull-down;
+			bias-bus-hold;
 		};
 
 		rts-pins {

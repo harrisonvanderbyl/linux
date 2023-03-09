@@ -1222,12 +1222,14 @@
 		hstp-sw-ctrl-pins {
 			pins = "gpio132";
 			function = "gpio";
+			bias-pull-down;
 		};
 
 		hstp-bt-en-pins {
 			pins = "gpio133";
 			function = "gpio";
 			drive-strength = <16>;
+			bias-disable;
 		};
 	};
 
@@ -1254,9 +1256,9 @@
 
 	uart2_state: uart2-state {
 		cts-pins {
-			pins = "gpio122";
+			pins = "gpio121";
 			function = "qup2";
-			bias-disable;
+			bias-bus-hold;
 		};
 
 		rts-tx-pins {

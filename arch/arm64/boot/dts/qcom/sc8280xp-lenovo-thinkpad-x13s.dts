@@ -430,9 +430,7 @@
 			regulator-min-microvolt = <1880000>;
 			regulator-max-microvolt = <1900000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_AUTO>,
-						  <RPMH_REGULATOR_MODE_RET>;
-			regulator-allow-set-load;
+			regulator-always-on;
 		};
 
 		vreg_l1c: ldo1 {

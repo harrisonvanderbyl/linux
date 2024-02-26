@@ -1226,27 +1226,15 @@ static const struct msm_dp_desc *dp_display_get_desc(struct platform_device *pde
 	return NULL;
 }
 
-static int dp_display_get_next_bridge(struct msm_dp *dp);
-
-static int dp_display_probe_tail(struct device *dev)
-{
-	struct msm_dp *dp = dev_get_drvdata(dev);
-	int ret;
-
-	ret = dp_display_get_next_bridge(dp);
-	if (ret)
-		return ret;
-
-	ret = component_add(dev, &dp_display_comp_ops);
-	if (ret)
-		DRM_ERROR("component add failed, rc=%d\n", ret);
-
-	return ret;
-}
-
 static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
 {
-	return dp_display_probe_tail(aux->dev);
+	int rc;
+
+	rc = component_add(aux->dev, &dp_display_comp_ops);
+	if (rc)
+		DRM_ERROR("eDP component add failed, rc=%d\n", rc);
+
+	return rc;
 }
 
 static int dp_display_probe(struct platform_device *pdev)
@@ -1321,9 +1309,11 @@ static int dp_display_probe(struct platform_device *pdev)
 			goto err;
 		}
 	} else {
-		rc = dp_display_probe_tail(&pdev->dev);
-		if (rc)
+		rc = component_add(&pdev->dev, &dp_display_comp_ops);
+		if (rc) {
+			DRM_ERROR("component add failed, rc=%d\n", rc);
 			goto err;
+		}
 	}
 
 	return rc;
@@ -1454,7 +1444,7 @@ static int dp_display_get_next_bridge(struct msm_dp *dp)
 	 * For DisplayPort interfaces external bridges are optional, so
 	 * silently ignore an error if one is not present (-ENODEV).
 	 */
-	rc = devm_dp_parser_find_next_bridge(&dp->pdev->dev, dp_priv->parser);
+	rc = devm_dp_parser_find_next_bridge(dp->drm_dev->dev, dp_priv->parser);
 	if (!dp->is_edp && rc == -ENODEV)
 		return 0;
 
@@ -1473,6 +1463,10 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
 	dp_display->drm_dev = dev;
 
 	dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
+
+	ret = dp_display_get_next_bridge(dp_display);
+	if (ret)
+		return ret;
 
 	ret = dp_bridge_init(dp_display, dev, encoder);
 	if (ret) {

@@ -291,10 +291,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
 		return -EINVAL;
 	}
 
-	ret = pm_runtime_resume_and_get(dp_aux->dev);
-	if (ret)
-		return  ret;
-
 	mutex_lock(&aux->mutex);
 	if (!aux->initted) {
 		ret = -EIO;
@@ -368,7 +364,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
 
 exit:
 	mutex_unlock(&aux->mutex);
-	pm_runtime_put_sync(dp_aux->dev);
 
 	return ret;
 }

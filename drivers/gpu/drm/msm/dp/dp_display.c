@@ -1189,9 +1189,9 @@ static int dp_display_request_irq(struct dp_display_private *dp)
 	struct platform_device *pdev = dp->dp_display.pdev;
 
 	dp->irq = platform_get_irq(pdev, 0);
-	if (dp->irq < 0) {
+	if (!dp->irq) {
 		DRM_ERROR("failed to get irq\n");
-		return dp->irq;
+		return -EINVAL;
 	}
 
 	rc = devm_request_irq(&pdev->dev, dp->irq, dp_display_irq_handler,

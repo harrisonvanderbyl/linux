@@ -609,7 +609,6 @@
 
 &usb_1_ss0_dwc3 {
 	dr_mode = "host";
-	usb-role-switch;
 };
 
 &usb_1_ss1_hsphy {
@@ -634,7 +633,6 @@
 
 &usb_1_ss1_dwc3 {
 	dr_mode = "host";
-	usb-role-switch;
 };
 
 &usb_1_ss2_hsphy {
@@ -659,5 +657,4 @@
 
 &usb_1_ss2_dwc3 {
 	dr_mode = "host";
-	usb-role-switch;
 };

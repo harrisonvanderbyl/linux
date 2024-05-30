@@ -271,7 +271,8 @@ static bool qcom_geni_serial_poll_bit(struct uart_port *uport,
 	u32 reg;
 	struct qcom_geni_serial_port *port;
 	unsigned int baud;
-	unsigned int fifo_bits;
+	unsigned int max_queued_bytes;
+	unsigned int max_queued_bits;
 	unsigned long timeout_us = 20000;
 	struct qcom_geni_private_data *private_data = uport->private_data;
 
@@ -280,12 +281,37 @@ static bool qcom_geni_serial_poll_bit(struct uart_port *uport,
 		baud = port->baud;
 		if (!baud)
 			baud = 115200;
-		fifo_bits = port->tx_fifo_depth * port->tx_fifo_width;
+
+		/*
+		 * Add 1 to tx_fifo_depth to account for the hidden register
+		 * on the firmware side that can hold a word.
+		 */
+		max_queued_bytes =
+			DIV_ROUND_UP((port->tx_fifo_depth + 1) * port->tx_fifo_width,
+				     BITS_PER_BYTE);
+
+		/*
+		 * The maximum number of bits per byte on the wire is 13 from:
+		 * - 1 start bit
+		 * - 8 data bits
+		 * - 1 parity bit
+		 * - 3 stop bits
+		 *
+		 * While we could try count the actual bits per byte based on
+		 * the port configuration, this is a rough timeout anyway so
+		 * using the max is fine.
+		 */
+		max_queued_bits = max_queued_bytes * 13;
+
 		/*
 		 * Total polling iterations based on FIFO worth of bytes to be
 		 * sent at current baud. Add a little fluff to the wait.
+		 *
+		 * NOTE: this assumes that flow control isn't used, but with
+		 * flow control we could wait indefinitely and that wouldn't
+		 * be OK.
 		 */
-		timeout_us = ((fifo_bits * USEC_PER_SEC) / baud) + 500;
+		timeout_us = ((max_queued_bits * USEC_PER_SEC) / baud) + 500;
 	}
 
 	/*

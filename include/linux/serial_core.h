@@ -889,14 +889,21 @@ unsigned int uart_get_divisor(struct uart_port *port, unsigned int baud);
 /*
  * Calculates FIFO drain time.
  */
-static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+static inline unsigned int uart_fifo_timeout_ms(struct uart_port *port)
 {
 	u64 fifo_timeout = (u64)READ_ONCE(port->frame_time) * port->fifosize;
+	unsigned int fifo_timeout_ms = div_u64(fifo_timeout, NSEC_PER_MSEC);
 
-	/* Add .02 seconds of slop */
-	fifo_timeout += 20 * NSEC_PER_MSEC;
+	/*
+	 * Add .02 seconds of slop. This also helps account for the fact that
+	 * when we converted from ns to ms that we didn't round up.
+	 */
+	return fifo_timeout_ms + 20;
+}
 
-	return max(nsecs_to_jiffies(fifo_timeout), 1UL);
+static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+{
+	return msecs_to_jiffies(uart_fifo_timeout_ms(port));
 }
 
 /* Base timer interval for polling */

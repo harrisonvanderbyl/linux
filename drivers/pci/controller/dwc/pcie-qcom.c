@@ -1517,7 +1517,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
 		goto err_pm_runtime_put;
 	}
 
-	ret = qcom_pcie_cmn_icc_get_resource(pcie->pci, pcie->icc_mem);
+	ret = qcom_pcie_cmn_icc_get_resource(pcie->pci, &pcie->icc_mem);
 	if (ret)
 		goto err_pm_runtime_put;
 

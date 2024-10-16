@@ -289,6 +289,8 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&nvme_reg_en>;
+
+		regulator-boot-on;
 	};
 
 	vph_pwr: regulator-vph-pwr {

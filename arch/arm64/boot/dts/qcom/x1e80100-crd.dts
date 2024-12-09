@@ -1809,6 +1809,10 @@
 	status = "okay";
 };
 
+&usb_1_ss0_dwc3 {
+	dr_mode = "host";
+};
+
 &usb_1_ss0_dwc3_hs {
 	remote-endpoint = <&pmic_glink_ss0_hs_in>;
 };
@@ -1837,6 +1841,10 @@
 	status = "okay";
 };
 
+&usb_1_ss1_dwc3 {
+	dr_mode = "host";
+};
+
 &usb_1_ss1_dwc3_hs {
 	remote-endpoint = <&pmic_glink_ss1_hs_in>;
 };
@@ -1863,6 +1871,10 @@
 
 &usb_1_ss2 {
 	status = "okay";
+};
+
+&usb_1_ss2_dwc3 {
+	dr_mode = "host";
 };
 
 &usb_1_ss2_dwc3_hs {

@@ -71,6 +71,24 @@ int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5)
 EXPORT_SYMBOL_GPL(qcom_q6v5_prepare);
 
 /**
+ * qcom_q6v5_attach() - initialize qcom_q6v5 context for already running rproc
+ * @q6v5:	reference to qcom_q6v5 context to be reinitialized
+ *
+ * Return: 0 on success, negative errno on failure
+ */
+int qcom_q6v5_attach(struct qcom_q6v5 *q6v5)
+{
+	/*
+	 * We assume the remoteproc is already running. There is no need to
+	 * vote for resources since handover already happened.
+	 */
+	q6v5->running = true;
+	q6v5->handover_issued = true;
+	return 0;
+}
+EXPORT_SYMBOL_GPL(qcom_q6v5_attach);
+
+/**
  * qcom_q6v5_unprepare() - unprepare the qcom_q6v5 context after stop
  * @q6v5:	reference to qcom_q6v5 context to be unprepared
  *

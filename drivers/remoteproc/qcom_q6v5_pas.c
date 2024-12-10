@@ -79,7 +79,7 @@ struct qcom_adsp {
 	const char *dtb_firmware_name;
 	int pas_id;
 	int dtb_pas_id;
-	int lite_pas_id;
+	int real_pas_id;
 	unsigned int minidump_id;
 	int crash_reason_smem;
 	unsigned int smem_host_id;
@@ -222,9 +222,6 @@ static int adsp_load(struct rproc *rproc, const struct firmware *fw)
 
 	/* Store firmware handle to be used in adsp_start() */
 	adsp->firmware = fw;
-
-	if (adsp->lite_pas_id)
-		ret = qcom_scm_pas_shutdown(adsp->lite_pas_id);
 
 	if (adsp->dtb_pas_id) {
 		ret = request_firmware(&adsp->dtb_firmware, adsp->dtb_firmware_name, adsp->dev);
@@ -375,6 +372,13 @@ static void qcom_pas_handover(struct qcom_q6v5 *q6v5)
 	adsp_pds_disable(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
 }
 
+static int adsp_attach(struct rproc *rproc)
+{
+	struct qcom_adsp *adsp = rproc->priv;
+
+	return qcom_q6v5_attach(&adsp->q6v5);
+}
+
 static int adsp_stop(struct rproc *rproc)
 {
 	struct qcom_adsp *adsp = rproc->priv;
@@ -392,7 +396,12 @@ static int adsp_stop(struct rproc *rproc)
 	if (ret)
 		dev_err(adsp->dev, "failed to shutdown: %d\n", ret);
 
-	if (adsp->dtb_pas_id) {
+	if (adsp->real_pas_id) {
+		/* We just stopped the lite FW, start using the real PAS ID now */
+		adsp->pas_id = adsp->real_pas_id;
+		adsp->real_pas_id = 0;
+		/* DTB PAS ID is only used for the full FW */
+	} else if (adsp->dtb_pas_id) {
 		ret = qcom_scm_pas_shutdown(adsp->dtb_pas_id);
 		if (ret)
 			dev_err(adsp->dev, "failed to shutdown dtb: %d\n", ret);
@@ -433,6 +442,7 @@ static unsigned long adsp_panic(struct rproc *rproc)
 static const struct rproc_ops adsp_ops = {
 	.unprepare = adsp_unprepare,
 	.start = adsp_start,
+	.attach = adsp_attach,
 	.stop = adsp_stop,
 	.da_to_va = adsp_da_to_va,
 	.parse_fw = qcom_register_dump_segments,
@@ -443,6 +453,7 @@ static const struct rproc_ops adsp_ops = {
 static const struct rproc_ops adsp_minidump_ops = {
 	.unprepare = adsp_unprepare,
 	.start = adsp_start,
+	.attach = adsp_attach,
 	.stop = adsp_stop,
 	.da_to_va = adsp_da_to_va,
 	.parse_fw = qcom_register_dump_segments,
@@ -722,8 +733,13 @@ static int adsp_probe(struct platform_device *pdev)
 	adsp->dev = &pdev->dev;
 	adsp->rproc = rproc;
 	adsp->minidump_id = desc->minidump_id;
-	adsp->pas_id = desc->pas_id;
-	adsp->lite_pas_id = desc->lite_pas_id;
+	if (desc->lite_pas_id) {
+		adsp->pas_id = desc->lite_pas_id;
+		adsp->real_pas_id = desc->pas_id;
+		adsp->rproc->state = RPROC_DETACHED;
+	} else {
+		adsp->pas_id = desc->pas_id;
+	}
 	adsp->info_name = desc->sysmon_name;
 	adsp->smem_host_id = desc->smem_host_id;
 	adsp->decrypt_shutdown = desc->decrypt_shutdown;

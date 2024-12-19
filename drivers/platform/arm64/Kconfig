@@ -70,4 +70,12 @@ config EC_LENOVO_YOGA_C630
 
 	  Say M or Y here to include this support.
 
+config EC_QCOM_X1E_IT8987
+	tristate "Embedded Controller driver for most X1E80100 laptops"
+	depends on ARCH_QCOM || COMPILE_TEST
+	depends on I2C
+	help
+	  This driver currently supports reporting device suspend to the EC so it
+	  can take appropriate actions.
+
 endif # ARM64_PLATFORM_DEVICES

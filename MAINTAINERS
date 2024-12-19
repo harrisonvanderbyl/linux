@@ -20181,6 +20181,12 @@ L:	netdev@vger.kernel.org
 S:	Maintained
 F:	drivers/net/ipa/
 
+QCOM IT8987 EC DRIVER
+M:	Maya Matuszczyk <maccraft123mc@gmail.com>
+S:	Maintained
+F:	Documentation/devicetree/bindings/platform/qcom,x1e-it8987-ec.yaml
+F:	drivers/platform/arm64/qcom-x1e-it8987.c
+
 QEMU MACHINE EMULATOR AND VIRTUALIZER SUPPORT
 M:	Gabriel Somlo <somlo@cmu.edu>
 M:	"Michael S. Tsirkin" <mst@redhat.com>

@@ -9,8 +9,8 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/gpio-keys.h>
 #include <dt-bindings/input/input.h>
-#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 
 #include "x1e80100.dtsi"
 #include "x1e80100-pmics.dtsi"
@@ -95,7 +95,7 @@
 			compatible = "usb-c-connector";
 			reg = <0>;
 			power-role = "dual";
-			data-role = "dual";
+			data-role = "host";
 
 			ports {
 				#address-cells = <1>;
@@ -132,7 +132,7 @@
 			compatible = "usb-c-connector";
 			reg = <1>;
 			power-role = "dual";
-			data-role = "dual";
+			data-role = "host";
 
 			ports {
 				#address-cells = <1>;
@@ -1254,9 +1254,17 @@
 	status = "okay";
 };
 
+&smb2360_0 {
+	status = "okay";
+};
+
 &smb2360_1_eusb2_repeater {
 	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l14b_3p0>;
+};
+
+&smb2360_1 {
+	status = "okay";
 };
 
 &swr0 {

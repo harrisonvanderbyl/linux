@@ -783,34 +783,24 @@
 &i2c0 {
 	clock-frequency = <400000>;
 
-	pinctrl-0 = <&qup_i2c0_data_clk>, <&tpad_default>;
-	pinctrl-names = "default";
+	/* Enabled in Windows */
+	status = "okay";
+	};
+};
+
+&i2c1 {
+	clock-frequency = <400000>;
+
+	/* Enabled in Windows */
+	status = "okay";
+	};
+};
+
+&i2c2 {
+	clock-frequency = <400000>;
 
 	status = "okay";
 
-	/* ELAN06E2 or ELAN06E3 */
-	touchpad@15 {
-		compatible = "hid-over-i2c";
-		reg = <0x15>;
-
-		hid-descr-addr = <0x1>;
-		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
-
-		wakeup-source;
-	};
-
-	/* SYNA8022 or SYNA8024 */
-	touchpad@2c {
-		compatible = "hid-over-i2c";
-		reg = <0x2c>;
-
-		hid-descr-addr = <0x20>;
-		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
-
-		wakeup-source;
-	};
-
-	/* ELAN06F1 or SYNA06F2 */
 	keyboard@3a {
 		compatible = "hid-over-i2c";
 		reg = <0x3a>;
@@ -818,7 +808,26 @@
 		hid-descr-addr = <0x1>;
 		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
 
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
 		pinctrl-0 = <&kybd_default>;
+		pinctrl-names = "default";
+
+		wakeup-source;
+	};
+
+	touchpad@15 {
+		compatible = "hid-over-i2c";
+		reg = <0x15>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
+
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
+		pinctrl-0 = <&tpad_default>;
 		pinctrl-names = "default";
 
 		wakeup-source;
@@ -879,6 +888,14 @@
 				};
 			};
 		};
+	};
+};
+
+&i2c4 {
+	clock-frequency = <400000>;
+
+	/* Enabled in Windows */
+	status = "okay";
 	};
 };
 
@@ -1034,6 +1051,7 @@
 
 &mdss_dp0_out {
 	data-lanes = <0 1>;
+	link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
 };
 
 &mdss_dp1 {
@@ -1042,6 +1060,7 @@
 
 &mdss_dp1_out {
 	data-lanes = <0 1>;
+	link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
 };
 
 &mdss_dp3 {

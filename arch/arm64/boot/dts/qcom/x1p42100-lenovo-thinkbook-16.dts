@@ -13,7 +13,7 @@
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 
 #include "x1p42100.dtsi"
-#include "x1e80100-pmics.dtsi"
+#include "x1p42100-pmics.dtsi"
 
 / {
 	model = "Lenovo ThinkBook 16 Gen 7 QOY";
@@ -654,12 +654,12 @@
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
 
-//		vreg_l17b_2p5: ldo17 {
-//			regulator-name = "vreg_l17b_2p5";
-//			regulator-min-microvolt = <2504000>;
-//			regulator-max-microvolt = <2504000>;
-//			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-//		};
+		vreg_l17b_2p5: ldo17 {
+			regulator-name = "vreg_l17b_2p5";
+			regulator-min-microvolt = <2504000>;
+			regulator-max-microvolt = <2504000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
 	};
 
 	regulators-1 {
@@ -723,12 +723,12 @@
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
 
-//		vreg_l3d_1p8: ldo3 {
-//			regulator-name = "vreg_l3d_1p8";
-//			regulator-min-microvolt = <1800000>;
-//			regulator-max-microvolt = <1800000>;
-//			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-//		};
+		vreg_l3d_1p8: ldo3 {
+			regulator-name = "vreg_l3d_1p8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
 	};
 
 	regulators-3 {
@@ -1377,7 +1377,7 @@
 };
 
 &smb2360_0_eusb2_repeater {
-	vdd18-supply = <&vreg_l1b_1p8>;
+	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l2b_3p0>;
 };
 
@@ -1386,7 +1386,7 @@
 };
 
 &smb2360_1_eusb2_repeater {
-	vdd18-supply = <&vreg_l4b_1p8>;
+	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l14b_3p0>;
 };
 
@@ -1711,7 +1711,7 @@
 };
 
 &usb_1_ss1_qmpphy {
-	vdda-phy-supply = <&vreg_l3e_1p2>;
+	vdda-phy-supply = <&vreg_l2j_1p2>;
 	vdda-pll-supply = <&vreg_l2d_0p9>;
 
 	status = "okay";

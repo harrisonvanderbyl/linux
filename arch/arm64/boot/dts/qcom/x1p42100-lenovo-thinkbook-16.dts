@@ -1379,7 +1379,7 @@
 	pinctrl-names = "default", "sleep";
 	vmmc-supply = <&vreg_l9b_2p9>;
 	vqmmc-supply = <&vreg_l6b_1p8>;
-	bus-width = <4>;
+//	bus-width = <4>;
 //	no-sdio;
 //	no-mmc;
 	status = "okay";

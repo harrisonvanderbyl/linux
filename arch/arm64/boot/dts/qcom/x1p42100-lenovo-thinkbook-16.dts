@@ -13,7 +13,12 @@
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 
 #include "x1p42100.dtsi"
-#include "x1p42100-pmics.dtsi"
+#include "x1e80100-pmics.dtsi"
+
+/delete-node/ &pmc8380_6;
+/delete-node/ &pmc8380_6_thermal;
+/delete-node/ &pm8010;
+/delete-node/ &pm8010_thermal;
 
 / {
 	model = "Lenovo ThinkBook 16 Gen 7 QOY";

@@ -912,6 +912,8 @@
 		orientation-switch;
 		retimer-switch;
 
+		ps8830,boot-on;
+
 		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;

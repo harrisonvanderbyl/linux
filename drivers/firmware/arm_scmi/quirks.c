@@ -169,7 +169,7 @@ struct scmi_quirk {
 /* Global Quirks Definitions */
 DEFINE_SCMI_QUIRK(clock_rates_triplet_out_of_spec, NULL, NULL, NULL);
 DEFINE_SCMI_QUIRK(perf_level_get_fc_force,
-		  "bad-vend", NULL, "0x20000-", "bad-compat", "bad-compat-2");
+		  "Qualcomm", NULL, "0x20000-");
 
 /*
  * Quirks Pointers Array

@@ -1330,6 +1330,14 @@
 			       <72 2>, /* Secure EC I2C connection (?) */
 			       <238 1>; /* UFS Reset */
 
+	bt_en_default: bt-en-sleep-state {
+		pins = "gpio116";
+		function = "gpio";
+		output-low;
+		bias-disable;
+		drive-strength = <16>;
+	};
+
 	edp_reg_en: edp-reg-en-state {
 		pins = "gpio70";
 		function = "gpio";

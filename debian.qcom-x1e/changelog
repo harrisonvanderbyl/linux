@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc1-jg-1) oracular; urgency=medium
+
+  * Add HP Omnibook as its upstream on list, Asus ZenBook A14 as its on list
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 10 Apr 2025 15:57:31 +0200
+
 linux-qcom-x1e (6.15.0-rc1-jg-0) oracular; urgency=medium
 
   * cleaned rebase of jg/ubuntu-qcom-x1e onto jhovold/wip/x1e80100-6.15-rc1

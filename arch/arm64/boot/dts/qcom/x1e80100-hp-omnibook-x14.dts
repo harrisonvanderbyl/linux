@@ -9,8 +9,8 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/gpio-keys.h>
 #include <dt-bindings/input/input.h>
-#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 
 #include "x1e80100.dtsi"
 #include "x1e80100-pmics.dtsi"
@@ -85,10 +85,10 @@
 		compatible = "qcom,x1e80100-pmic-glink",
 			     "qcom,sm8550-pmic-glink",
 			     "qcom,pmic-glink";
-		#address-cells = <1>;
-		#size-cells = <0>;
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
 				    <&tlmm 123 GPIO_ACTIVE_HIGH>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 
 		/* Left-side port, closer to the screen */
 		connector@0 {
@@ -930,8 +930,6 @@
 		orientation-switch;
 		retimer-switch;
 
-		ps8830,boot-on;
-
 		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -1245,29 +1243,17 @@
 	status = "okay";
 };
 
-&smb2360_0 {
-	status = "okay";
-};
-
 &smb2360_0_eusb2_repeater {
 	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l2b_3p0>;
-};
 
-&smb2360_1 {
-	status = "okay";
-};
-
-&smb2360_0 {
 	status = "okay";
 };
 
 &smb2360_1_eusb2_repeater {
 	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l14b_3p0>;
-};
 
-&smb2360_1 {
 	status = "okay";
 };
 
@@ -1330,7 +1316,7 @@
 			       <72 2>, /* Secure EC I2C connection (?) */
 			       <238 1>; /* UFS Reset */
 
-	bt_en_default: bt-en-sleep-state {
+	bt_en_default: bt-en-sleep {
 		pins = "gpio116";
 		function = "gpio";
 		output-low;
@@ -1514,7 +1500,7 @@
 };
 
 &usb_1_ss0_qmpphy {
-	vdda-phy-supply = <&vreg_l2j_1p2>;
+	vdda-phy-supply = <&vreg_l3e_1p2>;
 	vdda-pll-supply = <&vreg_l1j_0p8>;
 
 	status = "okay";
@@ -1546,7 +1532,7 @@
 };
 
 &usb_1_ss1_qmpphy {
-	vdda-phy-supply = <&vreg_l2j_1p2>;
+	vdda-phy-supply = <&vreg_l3e_1p2>;
 	vdda-pll-supply = <&vreg_l2d_0p9>;
 
 	status = "okay";

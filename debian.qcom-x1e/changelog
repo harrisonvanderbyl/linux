@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.15.0-rc1-jg-2) oracular; urgency=medium
+
+  * Thinkbook 16:  add ELAN06FA as touchpad@15 Tested-by @koper
+  * Yoga 7: remove WCD938x codec, add patch for DMICs
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Fri, 11 Apr 2025 22:20:40 +0200
+
 linux-qcom-x1e (6.15.0-rc1-jg-1) oracular; urgency=medium
 
   * Add HP Omnibook as its upstream on list, Asus ZenBook A14 as its on list

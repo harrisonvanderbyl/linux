@@ -836,6 +836,8 @@
 &i2c2 {
 	clock-frequency = <400000>;
 
+	pinctrl-0 = <&qup_i2c2_data_clk>, <&tpad_default>;
+	pinctrl-names = "default";
 	status = "okay";
 
 	keyboard@3a {
@@ -854,6 +856,19 @@
 		wakeup-source;
 	};
 
+	touchpad@15 {
+		compatible = "hid-over-i2c";
+		reg = <0x15>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
+
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
+		wakeup-source;
+	};
+
 	touchpad@2c {
 		compatible = "hid-over-i2c";
 		reg = <0x2c>;
@@ -863,9 +878,6 @@
 
 		vdd-supply = <&vreg_misc_3p3>;
 		vddl-supply = <&vreg_l12b_1p2>;
-
-		pinctrl-0 = <&tpad_default>;
-		pinctrl-names = "default";
 
 		wakeup-source;
 	};

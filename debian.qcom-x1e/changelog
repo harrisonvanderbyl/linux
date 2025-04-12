@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc1-jg-3) oracular; urgency=medium
+
+  * Acer Swift 14: support both x1p64100/x1e78100 and x1p42100 types
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sat, 12 Apr 2025 20:33:21 +0200
+
 linux-qcom-x1e (6.15.0-rc1-jg-2) oracular; urgency=medium
 
   * Thinkbook 16:  add ELAN06FA as touchpad@15 Tested-by @koper

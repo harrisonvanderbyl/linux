@@ -836,26 +836,11 @@
 &i2c2 {
 	clock-frequency = <400000>;
 
-	pinctrl-0 = <&qup_i2c2_data_clk>, <&tpad_default>;
+	pinctrl-0 = <&qup_i2c2_data_clk>, <&tpad_default>, <&kybd_default>;
 	pinctrl-names = "default";
 	status = "okay";
 
-	keyboard@3a {
-		compatible = "hid-over-i2c";
-		reg = <0x3a>;
-
-		hid-descr-addr = <0x1>;
-		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
-
-		vdd-supply = <&vreg_misc_3p3>;
-		vddl-supply = <&vreg_l12b_1p2>;
-
-		pinctrl-0 = <&kybd_default>;
-		pinctrl-names = "default";
-
-		wakeup-source;
-	};
-
+	/* ELAN06FA */
 	touchpad@15 {
 		compatible = "hid-over-i2c";
 		reg = <0x15>;
@@ -869,6 +854,7 @@
 		wakeup-source;
 	};
 
+	/* CIRQ1080 or SYNA2BA6 */
 	touchpad@2c {
 		compatible = "hid-over-i2c";
 		reg = <0x2c>;
@@ -882,6 +868,46 @@
 		wakeup-source;
 	};
 
+	/* FTCS0038 */
+	touchpad@38 {
+		compatible = "hid-over-i2c";
+		reg = <0x38>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
+
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
+		wakeup-source;
+	};
+
+	keyboard@3a {
+		compatible = "hid-over-i2c";
+		reg = <0x3a>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
+
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
+		wakeup-source;
+	};
+
+	/* GXTP5100 */
+	touchpad@5d {
+		compatible = "hid-over-i2c";
+		reg = <0x5d>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
+
+		vdd-supply = <&vreg_misc_3p3>;
+		vddl-supply = <&vreg_l12b_1p2>;
+
+		wakeup-source;
+	};
 };
 
 &i2c5 {

@@ -1,3 +1,16 @@
+linux-qcom-x1e (6.15.0-rc2-jg-1) oracular; urgency=medium
+
+  * add USB typec mux patch https://lore.kernel.org/all/20250404-ml-topic-typec-mux-v1-1-22c0526381ba@pengutronix.de/
+  * remove WIP on dp-aux-backlight
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Fri, 18 Apr 2025 09:56:35 +0200
+
+linux-qcom-x1e (6.15.0-rc2-jg-0) oracular; urgency=medium
+
+  * rebase to jgovold/wip/x1e80100-6.15-rc2
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 14 Apr 2025 21:03:21 +0200
+
 linux-qcom-x1e (6.15.0-rc1-jg-3) oracular; urgency=medium
 
   * Acer Swift 14: support both x1p64100/x1e78100 and x1p42100 types

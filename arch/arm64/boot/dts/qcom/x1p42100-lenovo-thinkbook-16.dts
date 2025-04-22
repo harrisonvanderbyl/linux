@@ -30,22 +30,6 @@
 		serial1 = &uart14;
 	};
 
-	backlight: backlight {
-		compatible = "pwm-backlight";
-		pwms = <&pmk8550_pwm 0 500000>;
-		enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
-		pinctrl-0 = <&edp_bl_en>, <&edp_bl_pwm>;
-		pinctrl-names = "default";
-		power-supply = <&vreg_edp_bl>;
-
-		brightness-levels = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-							  21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
-							  41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
-							  61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80
-							  81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100>;
-		default-brightness-level = <80>;
-	};
-
 	wcd938x: audio-codec {
 		compatible = "qcom,wcd9385-codec";
 
@@ -328,22 +312,6 @@
 
 		pinctrl-0 = <&edp_reg_en>;
 		pinctrl-names = "default";
-
-		regulator-boot-on;
-	};
-
-	vreg_edp_bl: regulator-edp-bl {
-		compatible = "regulator-fixed";
-
-		regulator-name = "VBL9";
-		regulator-min-microvolt = <3600000>;
-		regulator-max-microvolt = <3600000>;
-
-		gpio = <&pmc8380_3_gpios 10 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&edp_bl_reg_en>;
 
 		regulator-boot-on;
 	};
@@ -1043,10 +1011,13 @@
 
 	aux-bus {
 		panel {
-			compatible = "edp-panel";
-			power-supply = <&vreg_edp_3p3>;
+			compatible = "lenovo,len160wuxga", "samsung,atna33xc20";
+			enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
 
-			backlight = <&backlight>;
+			pinctrl-0 = <&edp_bl_en>;
+			pinctrl-names = "default";
+
+			power-supply = <&vreg_edp_3p3>;
 
 			port {
 				edp_panel_in: endpoint {
@@ -1144,11 +1115,6 @@
 };
 
 &pmc8380_3_gpios {
-	edp_bl_reg_en: edp-bl-reg-en-state {
-		pins = "gpio10";
-		function = "normal";
-	};
-
 	edp_bl_en: edp-bl-en-state {
 		pins = "gpio4";
 		function = "normal";
@@ -1168,17 +1134,6 @@
 	edp_bl_pwm: edp-bl-pwm-state {
 		pins = "gpio5";
 		function = "func3";
-	};
-};
-
-&pmk8550_pwm {
-	status = "okay";
-};
-
-&pmk8550_gpios {
-	edp_bl_pwm: edp-bl-pwm-state {
-		pins = "gpio5";
-		function = "func1";
 	};
 };
 

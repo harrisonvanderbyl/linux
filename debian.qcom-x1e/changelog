@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.15.0-rc3-jg-0) oracular; urgency=medium
+
+  * rebase to v6.15-rc3 
+  * more stable variant for panel on Thinkbook 16
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Tue, 22 Apr 2025 11:38:10 +0200
+
 linux-qcom-x1e (6.15.0-rc2-jg-1) oracular; urgency=medium
 
   * add USB typec mux patch https://lore.kernel.org/all/20250404-ml-topic-typec-mux-v1-1-22c0526381ba@pengutronix.de/

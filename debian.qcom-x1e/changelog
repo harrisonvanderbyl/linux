@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc3-jg-1) oracular; urgency=medium
+
+  * rebase to jhovold/wip/x1e80100-6.15-rc3
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Wed, 23 Apr 2025 12:18:02 +0200
+
 linux-qcom-x1e (6.15.0-rc3-jg-0) oracular; urgency=medium
 
   * rebase to v6.15-rc3 

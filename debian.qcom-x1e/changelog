@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc4-jg-1) oracular; urgency=medium
+
+  * cleanly re-apply LTTPR patch V4 https://lore.kernel.org/all/20250430001330.265970-1-alex.vinarskis@gmail.com/
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 01 May 2025 08:28:21 +0200
+
 linux-qcom-x1e (6.15.0-rc4-jg-0) oracular; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.15-rc4

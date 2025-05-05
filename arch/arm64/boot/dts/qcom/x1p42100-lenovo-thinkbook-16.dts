@@ -58,11 +58,7 @@
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
-		pwms = <&pmk8550_pwm 0 5000000>;
-
-		brightness-levels = <0 2048 4096 8192 16384 65535>;
-		num-interpolated-steps = <20>;
-		default-brightness-level = <80>;
+		pwms = <&pm8550_pwm 0 500000>;
 
 		enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
 		power-supply = <&vreg_edp_bl>;
@@ -312,6 +308,22 @@
 
 		pinctrl-0 = <&edp_reg_en>;
 		pinctrl-names = "default";
+
+		regulator-boot-on;
+	};
+
+	vreg_edp_bl: regulator-edp-bl {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VBL9";
+		regulator-min-microvolt = <3600000>;
+		regulator-max-microvolt = <3600000>;
+
+		gpio = <&pmc8380_3_gpios 10 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&edp_bl_reg_en>;
 
 		regulator-boot-on;
 	};
@@ -1011,12 +1023,11 @@
 
 	aux-bus {
 		panel {
-			compatible = "lenovo,len160wuxga", "samsung,atna33xc20";
-			enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
+			compatible = "lenovo,len160wuxga", "panel-edp";
 
-			pinctrl-0 = <&edp_bl_en>;
-			pinctrl-names = "default";
+			backlight = <&backlight>;
 
+			enable-gpios = <&tlmm 74 GPIO_ACTIVE_HIGH>;
 			power-supply = <&vreg_edp_3p3>;
 
 			port {
@@ -1101,6 +1112,17 @@
 	status = "okay";
 };
 
+&pm8550_gpios {
+	edp_bl_pwm: edp-bl-pwm-state {
+		pins = "gpio5";
+		function = "func3";
+	};
+};
+
+&pm8550_pwm {
+	status = "okay";
+};
+
 &pm8550ve_8_gpios {
 	misc_3p3_reg_en: misc-3p3-reg-en-state {
 		pins = "gpio6";
@@ -1127,18 +1149,6 @@
 		pins = "gpio10";
 		function = "normal";
 	};
-
-};
-
-&pmk8550_gpios {
-	edp_bl_pwm: edp-bl-pwm-state {
-		pins = "gpio5";
-		function = "func3";
-	};
-};
-
-&pmk8550_pwm {
-	status = "okay";
 };
 
 &qupv3_0 {

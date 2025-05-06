@@ -58,13 +58,9 @@
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
-		pwms = <&pm8550_pwm 0 500000>;
+		pwms = <&pm8550_pwm 3 500000>;
 
-		enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
 		power-supply = <&vreg_edp_bl>;
-
-		pinctrl-0 = <&edp_bl_en>, <&edp_bl_pwm>;
-		pinctrl-names = "default";
 	};
 
 	gpio-keys {
@@ -1016,18 +1012,23 @@
 };
 
 &mdss_dp3 {
-	compatible = "qcom,x1e80100-dp";
 	/delete-property/ #sound-dai-cells;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&edp0_hpd_active>;
 
 	status = "okay";
 
 	aux-bus {
 		panel {
-			compatible = "lenovo,len160wuxga", "panel-edp";
+			compatible = "lenovo,len160wuxga", "samsung,atna33xc20";
 
 			backlight = <&backlight>;
 
-			enable-gpios = <&tlmm 74 GPIO_ACTIVE_HIGH>;
+			enable-gpios = <&pmc8380_3_gpios 4 GPIO_ACTIVE_HIGH>;
+			pinctrl-0 = <&edp_bl_en>;
+			pinctrl-names = "default";
+
 			power-supply = <&vreg_edp_3p3>;
 
 			port {
@@ -1110,13 +1111,6 @@
 	vdda-pll-supply = <&vreg_l2j_1p2>;
 
 	status = "okay";
-};
-
-&pm8550_gpios {
-	edp_bl_pwm: edp-bl-pwm-state {
-		pins = "gpio5";
-		function = "func3";
-	};
 };
 
 &pm8550_pwm {

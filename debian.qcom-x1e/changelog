@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.15.0-rc4-jg-3) oracular; urgency=medium
+
+  * enable FPC Fingerprint reader on the Thinkbook 16
+  * add new Synopsy eUSB2 driver
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 12 May 2025 09:20:51 +0200
+
 linux-qcom-x1e (6.15.0-rc4-jg-2) oracular; urgency=medium
 
   * more LTTPR debug patches

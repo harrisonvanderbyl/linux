@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc6-jg-3) oracular; urgency=medium
+
+  * remove new Synopsys eUSB2 driver except for optional reset GPIO on nxp,ptn3222
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 15 May 2025 13:53:56 +0200
+
 linux-qcom-x1e (6.15.0-rc6-jg-2) oracular; urgency=medium
 
   * enable camera on Thinkbook 16
@@ -13,7 +19,7 @@ linux-qcom-x1e (6.15.0-rc6-jg-0) oracular; urgency=medium
 linux-qcom-x1e (6.15.0-rc4-jg-3) oracular; urgency=medium
 
   * enable FPC Fingerprint reader on the Thinkbook 16
-  * add new Synopsy eUSB2 driver
+  * add new Synopsys eUSB2 driver
 
  -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 12 May 2025 09:20:51 +0200
 

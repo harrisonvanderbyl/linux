@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc6-jg-4) plucky; urgency=medium
+
+  * add dummy-regulator-consumer driver for the camera regulator
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sat, 17 May 2025 19:46:12 +0200
+
 linux-qcom-x1e (6.15.0-rc6-jg-3) oracular; urgency=medium
 
   * remove new Synopsys eUSB2 driver except for optional reset GPIO on nxp,ptn3222

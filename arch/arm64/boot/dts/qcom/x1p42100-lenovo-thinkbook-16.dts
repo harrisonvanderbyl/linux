@@ -63,6 +63,11 @@
 		power-supply = <&vreg_edp_bl>;
 	};
 
+	camera {
+		compatible = "regulator-dummy-consumer";
+		vdd-supply = <&vreg_cam_5p0>;
+	};
+
 	dp-connector {
 		compatible = "dp-connector";
 		label = "hdmi";
@@ -97,8 +102,8 @@
 
 	pmic-glink {
 		compatible = "qcom,x1e80100-pmic-glink",
-			     "qcom,sm8550-pmic-glink",
-			     "qcom,pmic-glink";
+				 "qcom,sm8550-pmic-glink",
+				 "qcom,pmic-glink";
 		#address-cells = <1>;
 		#size-cells = <0>;
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
@@ -323,7 +328,6 @@
 		pinctrl-names = "default";
 
 		regulator-boot-on;
-		regulator-always-on;
 	};
 
 	vreg_edp_3p3: regulator-edp-3p3 {
@@ -1317,8 +1321,8 @@
 
 &tlmm {
 	gpio-reserved-ranges = <34 2>, /* Unused */
-			       <72 2>, /* Secure EC I2C connection (?) */
-			       <238 1>; /* UFS Reset */
+				   <72 2>, /* Secure EC I2C connection (?) */
+				   <238 1>; /* UFS Reset */
 
 	cam_reg_en: cam-reg-en-state {
 		pins = "gpio44";

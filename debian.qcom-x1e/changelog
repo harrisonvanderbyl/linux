@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-rc7-jg-1) plucky; urgency=medium
+
+  * fix hdmi lanes link, use onboard-usb-dev for camera power
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Wed, 21 May 2025 21:57:50 +0200
+
 linux-qcom-x1e (6.15.0-rc7-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.15-rc7

@@ -860,7 +860,7 @@
 	status = "okay";
 
 	zap-shader {
-		firmware-name = "qcom/x1e80100/LENOVO/21NH/qcdxkmsuc8380.mbn";
+		firmware-name = "qcom/x1e80100/LENOVO/21NH/qcdxkmsucpurwa.mbn";
 	};
 };
 

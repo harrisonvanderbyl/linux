@@ -65,8 +65,6 @@
 
 	camera {
 		compatible = "usb5986,1198";
-		reg = <0>;
-		is-hub = <0>;
 
 		vdd-supply = <&vreg_cam_5p0>;
 

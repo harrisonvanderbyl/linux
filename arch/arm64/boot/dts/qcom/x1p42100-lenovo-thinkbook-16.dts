@@ -2,6 +2,7 @@
 /*
  * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
  * Copyright (c) 2024, Linaro Limited
+ * Copyright (c) 2025, Jens Glathe
  */
 
 /dts-v1/;
@@ -22,7 +23,7 @@
 
 / {
 	model = "Lenovo ThinkBook 16 Gen 7 QOY";
-	compatible = "lenovo,thinkbook-16", "qcom,x1e80100";
+	compatible = "lenovo,thinkbook-16", "qcom,x1p42100";
 	chassis-type = "laptop";
 
 	aliases {
@@ -105,12 +106,12 @@
 
 	pmic-glink {
 		compatible = "qcom,x1e80100-pmic-glink",
-				 "qcom,sm8550-pmic-glink",
-				 "qcom,pmic-glink";
+				"qcom,sm8550-pmic-glink",
+				"qcom,pmic-glink";
 		#address-cells = <1>;
 		#size-cells = <0>;
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
-							<&tlmm 123 GPIO_ACTIVE_HIGH>;
+				<&tlmm 123 GPIO_ACTIVE_HIGH>;
 
 		/* Display-adjacent port */
 		connector@0 {
@@ -249,12 +250,12 @@
 		wsa-dai-link {
 			link-name = "WSA Playback";
 
-			cpu {
-				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
-			};
-
 			codec {
 				sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&lpass_wsamacro 0>;
+			};
+
+			cpu {
+				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
 			};
 
 			platform {
@@ -265,12 +266,12 @@
 		va-dai-link {
 			link-name = "VA Capture";
 
-			cpu {
-				sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
-			};
-
 			codec {
 				sound-dai = <&lpass_vamacro 0>;
+			};
+
+			cpu {
+				sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
 			};
 
 			platform {
@@ -1088,7 +1089,7 @@
 
 	aux-bus {
 		panel {
-			compatible = "lenovo,len160wuxga", "samsung,atna33xc20";
+			compatible = "edp-panel";
 
 			backlight = <&backlight>;
 
@@ -1324,8 +1325,8 @@
 
 &tlmm {
 	gpio-reserved-ranges = <34 2>, /* Unused */
-				   <72 2>, /* Secure EC I2C connection (?) */
-				   <238 1>; /* UFS Reset */
+		<72 2>, /* Secure EC I2C connection (?) */
+		<238 1>; /* UFS Reset */
 
 	cam_reg_en: cam-reg-en-state {
 		pins = "gpio44";

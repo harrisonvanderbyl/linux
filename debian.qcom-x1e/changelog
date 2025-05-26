@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.15.0-jg-0) plucky; urgency=medium
+
+  * rebase to v6.15 on jhovold/wip/x1e810100-6.15
+  * add experimental DP 4-Lane patches from @alexVinarskis
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 26 May 2025 08:55:25 +0200
+
 linux-qcom-x1e (6.15.0-rc7-jg-1) plucky; urgency=medium
 
   * fix hdmi lanes link, use onboard-usb-dev for camera power

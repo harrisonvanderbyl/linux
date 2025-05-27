@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-jg-1) plucky; urgency=medium
+
+  * add further 4-lane hacks (experimental) for sc8280xp and HP X14 / TB16
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Tue, 27 May 2025 17:00:26 +0200
+
 linux-qcom-x1e (6.15.0-jg-0) plucky; urgency=medium
 
   * rebase to v6.15 on jhovold/wip/x1e810100-6.15

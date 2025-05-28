@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.15.0-jg-3) plucky; urgency=medium
+
+  * replace the 4-lane patch from @alexVinarskis with the "official" version of @kdybcio
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Wed, 28 May 2025 22:44:10 +0200
+
 linux-qcom-x1e (6.15.0-jg-2) plucky; urgency=medium
 
   * add Dell Latitude 7455 support from https://lore.kernel.org/all/20250525095341.12462-2-val@packett.cool/

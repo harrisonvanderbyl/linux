@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.15.0-jg-4) plucky; urgency=medium
+
+  * add iommu/arm-smmu patch for msm https://lore.kernel.org/all/20250520-msm-gpu-fault-fixes-next-v8-0-fce6ee218787@gmail.com/
+  * add test-fix for sbu-mux, type-c signal propagation
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 29 May 2025 17:15:40 +0200
+
 linux-qcom-x1e (6.15.0-jg-3) plucky; urgency=medium
 
   * replace the 4-lane patch from @alexVinarskis with the "official" version of @kdybcio

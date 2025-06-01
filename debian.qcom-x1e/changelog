@@ -1,3 +1,11 @@
+linux-qcom-x1e (6.15.0-jg-5) plucky; urgency=medium
+
+  * add charge limiting patchset https://lore.kernel.org/all/20250530-qcom_battmgr_update-v2-8-9e377193a656@oss.qualcomm.com/
+  * correct HP X14 dts for eUSB2-repeaters
+  * support for HP Omnibook X14 fe1 (Purwa SoC)
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sun, 01 Jun 2025 14:12:15 +0200
+
 linux-qcom-x1e (6.15.0-jg-4) plucky; urgency=medium
 
   * add iommu/arm-smmu patch for msm https://lore.kernel.org/all/20250520-msm-gpu-fault-fixes-next-v8-0-fce6ee218787@gmail.com/

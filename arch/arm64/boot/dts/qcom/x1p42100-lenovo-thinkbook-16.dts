@@ -859,7 +859,7 @@
 	status = "okay";
 
 	zap-shader {
-		firmware-name = "qcom/x1e80100/LENOVO/21NH/qcdxkmsucpurwa.mbn";
+		firmware-name = "qcom/x1p42100/LENOVO/21NH/qcdxkmsucpurwa.mbn";
 	};
 };
 
@@ -1221,15 +1221,15 @@
 };
 
 &remoteproc_adsp {
-	firmware-name = "qcom/x1e80100/LENOVO/21NH/qcadsp8380.mbn",
-			"qcom/x1e80100/LENOVO/21NH/adsp_dtbs.elf";
+	firmware-name = "qcom/x1p42100/LENOVO/21NH/qcadsp8380.mbn",
+			"qcom/x1p42100/LENOVO/21NH/adsp_dtbs.elf";
 
 	status = "okay";
 };
 
 &remoteproc_cdsp {
-	firmware-name = "qcom/x1e80100/LENOVO/21NH/qccdsp8380.mbn",
-			"qcom/x1e80100/LENOVO/21NH/cdsp_dtbs.elf";
+	firmware-name = "qcom/x1p42100/LENOVO/21NH/qccdsp8380.mbn",
+			"qcom/x1p42100/LENOVO/21NH/cdsp_dtbs.elf";
 
 	status = "okay";
 };

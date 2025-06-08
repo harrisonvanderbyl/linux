@@ -1,3 +1,11 @@
+linux-qcom-x1e (6.15.0-jg-6) plucky; urgency=medium
+
+  * add lenovo ideapad 5 dts
+  * amend Thinkbook 16 dts
+  * add x1p42100 GPUdriver patchset https://lore.kernel.org/all/20250607-x1p-adreno-v1-0-a8ea80f3b18b@oss.qualcomm.com/
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sun, 08 Jun 2025 09:07:16 +0200
+
 linux-qcom-x1e (6.15.0-jg-5) plucky; urgency=medium
 
   * add charge limiting patchset https://lore.kernel.org/all/20250530-qcom_battmgr_update-v2-8-9e377193a656@oss.qualcomm.com/

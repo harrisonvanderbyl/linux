@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.16.0-rc1-jg-0) plucky; urgency=medium
+
+  * rebase to jhovold/wip/x1e80100-6.16-rc1
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 12 Jun 2025 22:18:39 +0200
+
 linux-qcom-x1e (6.15.0-jg-6) plucky; urgency=medium
 
   * add lenovo ideapad 5 dts

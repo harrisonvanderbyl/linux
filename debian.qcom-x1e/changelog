@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.16.0-rc1-jg-1) plucky; urgency=medium
+
+  * add PCIe patch to avoid AER issues
+  * add X1-45 speedbin 233 patch
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sat, 14 Jun 2025 18:44:26 +0200
+
 linux-qcom-x1e (6.16.0-rc1-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.16-rc1

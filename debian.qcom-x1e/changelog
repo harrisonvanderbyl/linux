@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.16.0-rc1-jg-2) plucky; urgency=medium
+
+  * arm64: dts: qcom: x1p42100: Split dt for Ideapad 5 variants
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sun, 15 Jun 2025 19:08:29 +0200
+
 linux-qcom-x1e (6.16.0-rc1-jg-1) plucky; urgency=medium
 
   * add PCIe patch to avoid AER issues

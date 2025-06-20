@@ -17,8 +17,12 @@
 	compatible = "asus,zenbook-a14-ux3407qa", "qcom,x1p42100";
 };
 
+&gpu {
+	status = "okay";
+};
+
 &gpu_zap_shader {
-	firmware-name = "qcom/x1e80100/ASUSTeK/zenbook-a14/qcdxkmsucpurwa.mbn";
+	firmware-name = "qcom/x1p42100/ASUSTeK/zenbook-a14/qcdxkmsucpurwa.mbn";
 };
 
 &remoteproc_adsp {

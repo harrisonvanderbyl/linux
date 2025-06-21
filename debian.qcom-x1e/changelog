@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.16.0-rc2-jg-1) plucky; urgency=medium
+
+  * Merge tag 'ath-current-20250617' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath
+  * Merge tag 'wireless-2025-06-18' of https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sat, 21 Jun 2025 18:37:01 +0200
+
 linux-qcom-x1e (6.16.0-rc2-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.16-rc2

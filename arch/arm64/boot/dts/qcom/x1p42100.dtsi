@@ -26,20 +26,10 @@
 };
 
 &gmu {
-	/delete-property/ compatible;
 	compatible = "qcom,adreno-gmu-x145.0", "qcom,adreno-gmu";
 };
 
-&qfprom {
-	gpu_speed_bin: gpu_speed_bin@119 {
-		reg = <0x119 0x2>;
-		bits = <7 9>;
-	};
-};
-
 &gpu {
-	/delete-property/ compatible;
-
 	compatible = "qcom,adreno-43030c00", "qcom,adreno";
 
 	nvmem-cells = <&gpu_speed_bin>;
@@ -159,6 +149,13 @@
 
 &pcie6a_phy {
 	compatible = "qcom,x1p42100-qmp-gen4x4-pcie-phy";
+};
+
+&qfprom {
+	gpu_speed_bin: gpu-speed-bin@119 {
+		reg = <0x119 0x2>;
+		bits = <7 9>;
+	};
 };
 
 &soc {

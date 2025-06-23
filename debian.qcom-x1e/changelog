@@ -1,3 +1,11 @@
+linux-qcom-x1e (6.16.0-rc3-jg-0) plucky; urgency=medium
+
+  * rebase to jhovold/wip/x1e80100-6.16-rc3
+  * arm64: dts: qcom: x1p42100-tb16: fix gpio-sbu-mux gpio assignments
+  * arm64: dts: qcom: x1p42100: remove backlight pwm for Ideapad 5 variants
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 23 Jun 2025 20:46:08 +0200
+
 linux-qcom-x1e (6.16.0-rc2-jg-1) plucky; urgency=medium
 
   * Merge tag 'ath-current-20250617' of git://git.kernel.org/pub/scm/linux/kernel/git/ath/ath

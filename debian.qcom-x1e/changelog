@@ -1,3 +1,11 @@
+linux-qcom-x1e (6.16.0-rc3-jg-1) plucky; urgency=medium
+
+  * config: add CONFIG_EFI_ARMSTUB_DTB_LOADER=y
+  * arm64: dts: qcom: x1e78100-lenovo-thinkpad-t14s: add link-frequencies for dp0, dp1 
+  * config: add CONFIG_REGULATOR_DUMMY_CONSUMER=m
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Tue, 24 Jun 2025 22:26:46 +0200
+
 linux-qcom-x1e (6.16.0-rc3-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.16-rc3

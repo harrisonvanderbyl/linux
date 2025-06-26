@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.16.0-rc3-jg-2) plucky; urgency=medium
+
+  * arm64: dts: qcom: x1p42100-ideapad-slim5x: amend against tb16, remove cam supply
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Thu, 26 Jun 2025 16:09:16 +0200
+
 linux-qcom-x1e (6.16.0-rc3-jg-1) plucky; urgency=medium
 
   * config: add CONFIG_EFI_ARMSTUB_DTB_LOADER=y

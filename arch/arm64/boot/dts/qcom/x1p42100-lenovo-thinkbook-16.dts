@@ -66,7 +66,7 @@
 
 	/*
 	 * This is an odd one. The camera is physically behind the eusb9 repeater (confirmed) but
-	 * if it is placed below the usb_2_dwc3 node, it will be switched of after ~30 seconds.
+	 * if it is placed below the usb_2_dwc3 node, it will be switched off after ~30 seconds.
 	 * The whole reason it is described in the dt (as an USB device) is its requirement for
 	 * that additional regulator, and to get power management to switch it off when suspended.
 	 * Defining it stand-alone does work.
@@ -111,6 +111,7 @@
 
 	pmic-glink {
 		compatible = "qcom,x1e80100-pmic-glink",
+			     "qcom,sm8550-pmic-glink",
 			     "qcom,pmic-glink";
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -1471,7 +1472,7 @@
 		sel-pins {
 			pins = "gpio168";
 			function = "gpio";
-			bias-pul-up;
+			bias-pull-up;
 			drive-strength = <2>;
 		};
 

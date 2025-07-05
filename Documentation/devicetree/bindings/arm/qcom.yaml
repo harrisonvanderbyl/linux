@@ -1144,6 +1144,7 @@ properties:
               - dell,latitude-7455
               - dell,xps13-9345
               - hp,elitebook-ultra-g1q
+              - hp,omnibook-x14
               - lenovo,yoga-slim7x
               - microsoft,romulus13
               - microsoft,romulus15
@@ -1162,6 +1163,7 @@ properties:
           - enum:
               - acer,swift-go14-01
               - asus,zenbook-a14-ux3407qa
+              - hp,omnibook-x14-fe1
               - lenovo,ideapad-5
               - lenovo,thinkbook-16
               - qcom,x1p42100-crd

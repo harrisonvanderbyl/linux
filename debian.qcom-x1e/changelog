@@ -1,3 +1,10 @@
+linux-qcom-x1e (6.16.0-rc4-jg-1) plucky; urgency=medium
+
+  * add https://patchwork.freedesktop.org/series/143282/ for tests
+  * refinement of Ideapad Slim 5x (pcie3, hdmi, backlight)
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sun, 06 Jul 2025 12:13:08 +0200
+
 linux-qcom-x1e (6.16.0-rc4-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.16-rc4

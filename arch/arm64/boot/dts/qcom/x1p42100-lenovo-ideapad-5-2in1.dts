@@ -1197,6 +1197,10 @@
 	};
 };
 
+&pmk8550_rtc {
+	status = "disabled";
+};
+
 &qupv3_0 {
 	status = "okay";
 };

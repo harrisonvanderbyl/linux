@@ -42,7 +42,7 @@
 	bluetooth {
 		compatible = "qcom,wcn7850-bt";
 		pinctrl-names = "default";
-		pinctrl-0 = <&bt_en_default>;
+		pinctrl-0 = <&wcn_bt_en>;
 		enable-gpios = <&tlmm 116 GPIO_ACTIVE_HIGH>;
 		max-speed = <3000000>;
 	};

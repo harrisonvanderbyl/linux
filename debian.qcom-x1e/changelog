@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.16.0-rc6-jg-1) plucky; urgency=medium
+
+  * rework ideapad 5 2in1 dt
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Sat, 19 Jul 2025 09:15:53 +0200
+
 linux-qcom-x1e (6.16.0-rc6-jg-0) plucky; urgency=medium
 
   * rebase to jhovold/wip/x1e80100-6.16-rc6

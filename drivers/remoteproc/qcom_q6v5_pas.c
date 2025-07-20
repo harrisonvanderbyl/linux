@@ -25,6 +25,8 @@
 #include <linux/soc/qcom/mdt_loader.h>
 #include <linux/soc/qcom/smem.h>
 #include <linux/soc/qcom/smem_state.h>
+#include <linux/moduleparam.h>
+#include <asm/virt.h>
 
 #include "qcom_common.h"
 #include "qcom_pil_info.h"
@@ -118,6 +120,10 @@ struct qcom_adsp {
 	struct qcom_scm_pas_metadata pas_metadata;
 	struct qcom_scm_pas_metadata dtb_pas_metadata;
 };
+
+static bool qcom_adsp_lite = false;
+module_param_named(adsp_lite, qcom_adsp_lite, bool, 0444);
+MODULE_PARM_DESC(adsp_lite, "Attach to pre-loaded ADSP Lite firmware from cold boot");
 
 static void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
 		       void *dest, size_t offset, size_t size)
@@ -733,7 +739,7 @@ static int adsp_probe(struct platform_device *pdev)
 	adsp->dev = &pdev->dev;
 	adsp->rproc = rproc;
 	adsp->minidump_id = desc->minidump_id;
-	if (desc->lite_pas_id) {
+	if ((desc->lite_pas_id && qcom_adsp_lite) || is_kernel_in_hyp_mode()) {
 		adsp->pas_id = desc->lite_pas_id;
 		adsp->real_pas_id = desc->pas_id;
 		adsp->rproc->state = RPROC_DETACHED;

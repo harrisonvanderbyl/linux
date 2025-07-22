@@ -42,3 +42,9 @@
 &pcie_smmu {
 	status = "okay";
 };
+
+&venus {
+	video-firmware {
+		iommus = <&apps_smmu 0x2a02 0x400>;
+	};
+};

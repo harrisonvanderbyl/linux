@@ -1,3 +1,9 @@
+linux-qcom-x1e (6.16.0-rc6-jg-2) plucky; urgency=medium
+
+  * EL2-support: add parameter adsp_lite, handle EL2 case
+
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Tue, 22 Jul 2025 18:43:09 +0200
+
 linux-qcom-x1e (6.16.0-rc6-jg-1) plucky; urgency=medium
 
   * rework ideapad 5 2in1 dt

@@ -12,6 +12,16 @@
 	status = "disabled";
 };
 
+&iris {
+	/* Use generic firmware in EL2 and enable it by default */
+	status = "okay";
+	firmware-name = "qcom/vpu/vpu30_p4.mbn";
+
+	video-firmware {
+		iommus = <&apps_smmu 0x1942 0x0>;
+	};
+};
+
 /*
  * When running under Gunyah, this IOMMU is controlled by the firmware,
  * however when we take ownership of it in EL2, we need to configure

@@ -964,23 +964,31 @@
 	status = "okay";
 };
 
+
 &spi10 {
-	clock-frequency = <400000>;
-
 	status = "okay";
+	// probably incorrect in some way, but good place to start
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi10_active>;
 
-	/* ILIT2911 or GTCH1563 */
-	touchscreen@0 {
-		compatible = "hid-over-i2c";
-		reg = <0x0>;
+	hid@0 {
+		compatible = "hid-over-spi";
 
-		hid-descr-addr = <0x1>;
-		interrupts-extended = <&tlmm 51 IRQ_TYPE_LEVEL_LOW>;
+		reg = <0>;
+		// spi-max-frequency = <25000000>;
+		spi-max-frequency = <12500000>;
 
-		pinctrl-0 = <&ts0_default>;
-		pinctrl-names = "default";
+		interrupts-extended = <&tlmm 122 IRQ_TYPE_EDGE_FALLING>;
+
+		pinctrl-names = "active", "sleep", "reset";
+		pinctrl-0 = <&spi10_hid0_reset_deassert &spi10_hid0_int_bias>;
+		pinctrl-1 = <&spi10_hid0_reset_assert &spi10_hid0_int_unbias>;
+		pinctrl-2 = <&spi10_hid0_reset_assert &spi10_hid0_int_bias>;
+
+		vdd-supply = <&vreg_ts_5p0>;
+
+		hid-descr-addr = <1>;
 	};
-
 };
 
 &pcie4_port0 {
@@ -1261,6 +1269,52 @@
 			function = "gpio";
 			drive-strength = <2>;
 			bias-disable;
+	};
+
+
+	spi1_active: spi1-active-state {
+		pins = "gpio114", "gpio115", "gpio116", "gpio117";
+		function = "qup1";
+
+		drive-strength = <6>;
+		bias-disable;
+
+		// Note: Drive strength and bias set based on qcom lahaina
+		// (Surface Duo 2) DT.
+	};
+
+	spi10_hid0_reset_deassert: spi1-hid1-reset-deassert {
+		pins = "gpio54";
+		function = "gpio";
+
+		drive-strength = <2>;
+		bias-disable;
+		output-high;
+	};
+
+	spi10_hid0_reset_assert: spi1-hid1-reset-assert {
+		pins = "gpio54";
+		function = "gpio";
+
+		drive-strength = <2>;
+		bias-disable;
+		output-low;
+	};
+
+	spi10_hid0_int_bias: spi1-hid1-int-bias {
+		pins = "gpio122";
+		function = "gpio";
+
+		input-enable;
+		bias-pull-up;
+	};
+
+	spi10_hid0_int_unbias: spi1-hid1-int-unbias {
+		pins = "gpio122";
+		function = "gpio";
+
+		input-enable;
+		bias-disable;
 	};
 };
 

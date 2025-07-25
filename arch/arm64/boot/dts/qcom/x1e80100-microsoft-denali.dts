@@ -964,6 +964,25 @@
 	status = "okay";
 };
 
+&spi10 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+
+	/* ILIT2911 or GTCH1563 */
+	touchscreen@0 {
+		compatible = "hid-over-i2c";
+		reg = <0x0>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 51 IRQ_TYPE_LEVEL_LOW>;
+
+		pinctrl-0 = <&ts0_default>;
+		pinctrl-names = "default";
+	};
+
+};
+
 &pcie4_port0 {
 	wifi@0 {
 		compatible = "pci17cb,1107";

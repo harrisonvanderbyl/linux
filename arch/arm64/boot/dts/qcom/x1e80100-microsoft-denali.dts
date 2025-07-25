@@ -985,8 +985,6 @@
 		pinctrl-1 = <&spi10_hid0_reset_assert &spi10_hid0_int_unbias>;
 		pinctrl-2 = <&spi10_hid0_reset_assert &spi10_hid0_int_bias>;
 
-		vdd-supply = <&vreg_ts_5p0>;
-
 		hid-descr-addr = <1>;
 	};
 };
@@ -1272,7 +1270,7 @@
 	};
 
 
-	spi1_active: spi1-active-state {
+	spi10_active: spi1-active-state {
 		pins = "gpio114", "gpio115", "gpio116", "gpio117";
 		function = "qup1";
 

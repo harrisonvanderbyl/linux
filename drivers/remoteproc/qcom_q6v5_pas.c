@@ -491,6 +491,13 @@ static const struct rproc_ops adsp_minidump_ops = {
 	.coredump = adsp_minidump,
 };
 
+static const struct rproc_ops adsp_ops_no_reset = {
+	.attach = adsp_attach,
+	.da_to_va = adsp_da_to_va,
+	.stop = adsp_stop,
+	.panic = adsp_panic,
+};
+
 static int adsp_init_clock(struct qcom_adsp *adsp)
 {
 	adsp->xo = devm_clk_get(adsp->dev, "xo");
@@ -748,6 +755,9 @@ static int adsp_probe(struct platform_device *pdev)
 	if (desc->minidump_id)
 		ops = &adsp_minidump_ops;
 
+	if (device_property_read_bool(&pdev->dev, "qcom,broken-reset"))
+		ops = &adsp_ops_no_reset;
+
 	rproc = devm_rproc_alloc(&pdev->dev, desc->sysmon_name, ops, fw_name, sizeof(*adsp));
 
 	if (!rproc) {
@@ -755,10 +765,14 @@ static int adsp_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
-	if (desc->auto_boot)
-		rproc->auto_boot = RPROC_AUTO_BOOT_RESTART_IF_FW_AVAILABLE;
-	else
+	if (desc->auto_boot) {
+		if (ops->start)
+			rproc->auto_boot = RPROC_AUTO_BOOT_RESTART_IF_FW_AVAILABLE;
+		else
+			rproc->auto_boot = RPROC_AUTO_BOOT_ATTACH_OR_START;
+	} else {
 		rproc->auto_boot = RPROC_AUTO_BOOT_DISABLED;
+	}
 	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
 
 	adsp = rproc->priv;
@@ -820,6 +834,13 @@ static int adsp_probe(struct platform_device *pdev)
 	 */
 	qcom_q6v5_read_smp2p_state(&adsp->q6v5);
 
+	if (rproc->state == RPROC_OFFLINE && !ops->start) {
+		dev_err(&pdev->dev, "reset broken and remoteproc not running during boot, exiting\n");
+		/* Release all resources, but return 0 so we don't block sync_state() */
+		ret = 0;
+		goto deinit_q6v5;
+	}
+
 	qcom_add_glink_subdev(rproc, &adsp->glink_subdev, desc->ssr_name);
 	qcom_add_smd_subdev(rproc, &adsp->smd_subdev);
 	qcom_add_pdm_subdev(rproc, &adsp->pdm_subdev);
@@ -845,6 +866,7 @@ deinit_remove_pdm_smd_glink:
 	qcom_remove_pdm_subdev(rproc, &adsp->pdm_subdev);
 	qcom_remove_smd_subdev(rproc, &adsp->smd_subdev);
 	qcom_remove_glink_subdev(rproc, &adsp->glink_subdev);
+deinit_q6v5:
 	qcom_q6v5_deinit(&adsp->q6v5);
 detach_proxy_pds:
 	adsp_pds_detach(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
@@ -852,6 +874,7 @@ unassign_mem:
 	adsp_unassign_memory_region(adsp);
 free_rproc:
 	device_init_wakeup(adsp->dev, false);
+	adsp->rproc = NULL;
 
 	return ret;
 }
@@ -859,6 +882,9 @@ free_rproc:
 static void adsp_remove(struct platform_device *pdev)
 {
 	struct qcom_adsp *adsp = platform_get_drvdata(pdev);
+
+	if (!adsp->rproc)
+		return;
 
 	rproc_del(adsp->rproc);
 

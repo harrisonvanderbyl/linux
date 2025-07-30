@@ -7,7 +7,7 @@
 /dts-v1/;
 
 #include "x1e80100.dtsi"
-#include "x1-zenbook-a14.dtsi"
+#include "x1-asus-zenbook-a14.dtsi"
 
 / {
 	model = "ASUS Zenbook A14 (UX3407RA)";
@@ -34,16 +34,4 @@
 			"qcom/x1e80100/ASUSTeK/zenbook-a14/cdsp_dtbs.elf";
 
 	status = "okay";
-};
-
-&uart14 {
-	status = "okay";
-
-	bluetooth {
-		compatible = "qcom,wcn7850-bt";
-		pinctrl-names = "default";
-		pinctrl-0 = <&wcn_bt_en>;
-		enable-gpios = <&tlmm 116 GPIO_ACTIVE_HIGH>;
-		max-speed = <3000000>;
-	};
 };

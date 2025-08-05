@@ -225,10 +225,13 @@ static int adsp_load(struct rproc *rproc, const struct firmware *fw)
 	/* Store firmware handle to be used in adsp_start() */
 	adsp->firmware = fw;
 
-	if (adsp->lite_pas_id)
-		qcom_scm_pas_shutdown(adsp->lite_pas_id);
-	if (adsp->lite_dtb_pas_id)
-		qcom_scm_pas_shutdown(adsp->lite_dtb_pas_id);
+	/*
+	 * We don't support loading the "lite" firmware, so we don't need to
+	 * keep trying to shut it down. If it was running, it should have
+	 * already been stopped by adsp_stop().
+	 */
+	adsp->lite_pas_id = 0;
+	adsp->lite_dtb_pas_id = 0;
 
 	if (adsp->dtb_pas_id) {
 		ret = request_firmware(&adsp->dtb_firmware, adsp->dtb_firmware_name, adsp->dev);
@@ -379,6 +382,28 @@ static void qcom_pas_handover(struct qcom_q6v5 *q6v5)
 	adsp_pds_disable(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
 }
 
+static int qcom_pas_shutdown(struct qcom_adsp *adsp, int pas_id, int lite_pas_id)
+{
+	int ret, lite_ret = -ENODEV;
+
+	/*
+	 * We don't know if the boot firmware started the "full" or "lite"
+	 * firmware, so we don't know if we need to shutdown the lite_pas_id or
+	 * the normal pas_id. Unfortunately, the return codes of the SCM calls
+	 * are also not helpful to figure that out. Since shutting down a
+	 * stopped remoteproc is a no-op, we just shutdown both and if one of
+	 * the calls succeeds, we assume it's okay.
+	 */
+	if (lite_pas_id)
+		lite_ret = qcom_scm_pas_shutdown(lite_pas_id);
+
+	ret = qcom_scm_pas_shutdown(pas_id);
+	if (ret && lite_ret)
+		return ret;
+
+	return 0;
+}
+
 static int adsp_stop(struct rproc *rproc)
 {
 	struct qcom_adsp *adsp = rproc->priv;
@@ -389,7 +414,7 @@ static int adsp_stop(struct rproc *rproc)
 	if (ret == -ETIMEDOUT)
 		dev_err(adsp->dev, "timed out on wait\n");
 
-	ret = qcom_scm_pas_shutdown(adsp->pas_id);
+	ret = qcom_pas_shutdown(adsp, adsp->pas_id, adsp->lite_pas_id);
 	if (ret && adsp->decrypt_shutdown)
 		ret = adsp_shutdown_poll_decrypt(adsp);
 
@@ -397,19 +422,28 @@ static int adsp_stop(struct rproc *rproc)
 		dev_err(adsp->dev, "failed to shutdown: %d\n", ret);
 
 	if (adsp->dtb_pas_id) {
-		ret = qcom_scm_pas_shutdown(adsp->dtb_pas_id);
+		ret = qcom_pas_shutdown(adsp, adsp->dtb_pas_id, adsp->lite_dtb_pas_id);
 		if (ret)
 			dev_err(adsp->dev, "failed to shutdown dtb: %d\n", ret);
 	}
 
-	handover = qcom_q6v5_unprepare(&adsp->q6v5);
-	if (handover)
-		qcom_pas_handover(&adsp->q6v5);
+	if (rproc->state != RPROC_DETACHED) {
+		handover = qcom_q6v5_unprepare(&adsp->q6v5);
+		if (handover)
+			qcom_pas_handover(&adsp->q6v5);
+	}
 
 	if (adsp->smem_host_id)
 		ret = qcom_smem_bust_hwspin_lock_by_host(adsp->smem_host_id);
 
 	return ret;
+}
+
+static int adsp_attach(struct rproc *rproc)
+{
+	struct qcom_adsp *adsp = rproc->priv;
+
+	return qcom_q6v5_attach(&adsp->q6v5);
 }
 
 static void *adsp_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *is_iomem)
@@ -438,6 +472,7 @@ static const struct rproc_ops adsp_ops = {
 	.unprepare = adsp_unprepare,
 	.start = adsp_start,
 	.stop = adsp_stop,
+	.attach = adsp_attach,
 	.da_to_va = adsp_da_to_va,
 	.parse_fw = qcom_register_dump_segments,
 	.load = adsp_load,
@@ -448,6 +483,7 @@ static const struct rproc_ops adsp_minidump_ops = {
 	.unprepare = adsp_unprepare,
 	.start = adsp_start,
 	.stop = adsp_stop,
+	.attach = adsp_attach,
 	.da_to_va = adsp_da_to_va,
 	.parse_fw = qcom_register_dump_segments,
 	.load = adsp_load,
@@ -720,7 +756,7 @@ static int adsp_probe(struct platform_device *pdev)
 	}
 
 	if (desc->auto_boot)
-		rproc->auto_boot = RPROC_AUTO_BOOT_ATTACH_OR_START;
+		rproc->auto_boot = RPROC_AUTO_BOOT_RESTART_IF_FW_AVAILABLE;
 	else
 		rproc->auto_boot = RPROC_AUTO_BOOT_DISABLED;
 	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
@@ -775,6 +811,14 @@ static int adsp_probe(struct platform_device *pdev)
 			     qcom_pas_handover);
 	if (ret)
 		goto detach_proxy_pds;
+
+	/*
+	 * Unfortunately, the PAS interface does not provide a reliable way to
+	 * check if a certain pas_id is currently running. Reading the smp2p
+	 * state is the best we can do to check if the remoteproc is already
+	 * running during boot.
+	 */
+	qcom_q6v5_read_smp2p_state(&adsp->q6v5);
 
 	qcom_add_glink_subdev(rproc, &adsp->glink_subdev, desc->ssr_name);
 	qcom_add_smd_subdev(rproc, &adsp->smd_subdev);

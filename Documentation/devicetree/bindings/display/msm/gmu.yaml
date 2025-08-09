@@ -231,6 +231,7 @@ allOf:
               - qcom,adreno-gmu-740.1
               - qcom,adreno-gmu-750.1
               - qcom,adreno-gmu-x185.1
+              - qcom,adreno-gmu-x145.0
     then:
       properties:
         reg:

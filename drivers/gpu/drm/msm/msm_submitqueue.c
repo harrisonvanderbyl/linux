@@ -41,6 +41,9 @@ int msm_file_private_set_sysprof(struct msm_file_private *ctx,
 		break;
 	}
 
+	if (gpu->funcs->sysprof_setup)
+		gpu->funcs->sysprof_setup(gpu);
+
 	ctx->sysprof = sysprof;
 
 	return 0;

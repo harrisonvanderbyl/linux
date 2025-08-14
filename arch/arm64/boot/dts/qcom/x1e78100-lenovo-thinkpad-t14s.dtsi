@@ -68,6 +68,7 @@
 
 	pmic-glink {
 		compatible = "qcom,x1e80100-pmic-glink",
+			     "qcom,sm8550-pmic-glink",
 			     "qcom,pmic-glink";
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
 				    <&tlmm 123 GPIO_ACTIVE_HIGH>;
@@ -1114,8 +1115,8 @@
 &mdss_dp3 {
 	/delete-property/ #sound-dai-cells;
 
+	pinctrl-0 = <&edp_hpd_default>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&edp0_hpd_active>;
 
 	status = "okay";
 
@@ -1392,6 +1393,12 @@
 			       <44 4>, /* SPI (TPM) */
 			       <72 2>, /* Secure EC I2C connection (?) */
 			       <238 1>; /* UFS Reset */
+
+	edp_hpd_default: edp-hpd-default-state {
+		pins = "gpio119";
+		function = "edp0_hot";
+		bias-disable;
+	};
 
 	eusb3_reset_n: eusb3-reset-n-state {
 		pins = "gpio6";

@@ -1,8 +1,8 @@
 linux-qcom-x1e (6.16-el2-jg-3) plucky; urgency=medium
 
   * arm64: qcom: dt: remove pm8010-thermal from visibility
-
- -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 11 Aug 2025 07:57:06 +0200
+  * arm64: dts: qcom: x1: Add missing pinctrl for eDP HPD https://lore.kernel.org/all/20250814-x1e80100-add-edp-hpd-v1-0-a52804db53f6@linaro.org/
+ -- Jens Glathe <jens.glathe@oldschoololutions.biz>  Mon, 15 Aug 2025 08:48:00 +0200
 
 linux-qcom-x1e (6.16-el2-jg-2) plucky; urgency=medium
 

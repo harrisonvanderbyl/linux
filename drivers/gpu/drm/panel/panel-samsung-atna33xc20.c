@@ -18,6 +18,50 @@
 #include <drm/display/drm_dp_helper.h>
 #include <drm/drm_edid.h>
 #include <drm/drm_panel.h>
+#include <drm/drm_modes.h>
+
+static const struct drm_display_mode atna40ct01_mode = {
+    .clock = 154250,
+    .hdisplay = 1920,
+    .hsync_start = 1920 + 48,
+    .hsync_end = 1920 + 48 + 32,
+    .htotal = 1920 + 48 + 32 + 80,
+    .vdisplay = 1200,
+    .vsync_start = 1200 + 8,
+    .vsync_end = 1200 + 8 + 8,
+    .vtotal = 1200 + 8 + 8 + 20,
+    .flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
+};
+
+/* Local definition of struct panel_desc from panel-edp.c */
+struct panel_desc {
+	const struct drm_display_mode *modes;
+	unsigned int num_modes;
+	unsigned int bpc;
+	struct {
+		unsigned int width;
+		unsigned int height;
+	} size;
+	struct {
+		unsigned int prepare;
+		unsigned int enable;
+		unsigned int disable;
+		unsigned int unprepare;
+	} delay;
+};
+
+static const struct panel_desc atna40ct01 = {
+    .modes = &atna40ct01_mode,
+    .num_modes = 1,
+    .bpc = 10,
+    .size = { .width = 302, .height = 189 },
+    .delay = {
+        .prepare = 50,    // From DSDT init (sleep-out)
+        .enable = 120,    // Sleep-out delay
+        .disable = 20,    // Display-off delay
+        .unprepare = 474, // From PowerSequence 01 DA
+    },
+};
 
 /* T3 VCC to HPD high is max 200 ms */
 #define HPD_MAX_MS	200
@@ -39,6 +83,7 @@ struct atana33xc20_panel {
 	ktime_t powered_off_time;
 	ktime_t powered_on_time;
 	ktime_t el_on3_off_time;
+	const struct panel_desc *desc;
 };
 
 static inline struct atana33xc20_panel *to_atana33xc20(struct drm_panel *panel)
@@ -190,7 +235,21 @@ static int atana33xc20_enable(struct drm_panel *panel)
 
 static int atana33xc20_unprepare(struct drm_panel *panel)
 {
+	struct atana33xc20_panel *p = to_atana33xc20(panel);
+	struct device *dev = panel->dev;
 	int ret;
+
+	dev_info(dev, "Unpreparing panel for %s\n",
+		 of_device_is_compatible(dev->of_node, "samsung,atna40ct01") ? "ATNA40CT01" : "ATNA33XC20");
+
+	if (of_device_is_compatible(dev->of_node, "samsung,atna40ct01")) {
+		u8 val = 0x28; // Display-off (28)
+		drm_dp_dpcd_write(p->aux, 0x0100, &val, 1);
+		msleep(20); // Delay from DSDT (0x14 = 20ms)
+		val = 0x10; // Sleep-in (10)
+		drm_dp_dpcd_write(p->aux, 0x0100, &val, 1);
+		msleep(120); // Delay from DSDT (0x78 = 120ms)
+	}
 
 	/*
 	 * Purposely do a put_sync, don't use autosuspend. The panel's tcon
@@ -209,12 +268,49 @@ static int atana33xc20_unprepare(struct drm_panel *panel)
 
 static int atana33xc20_prepare(struct drm_panel *panel)
 {
+	struct device *dev = panel->dev;
+	struct atana33xc20_panel *p = to_atana33xc20(panel);
+	struct drm_dp_aux *aux = p->aux;
 	int ret;
+
+	dev_info(dev, "Preparing panel for %s\n",
+		 of_device_is_compatible(dev->of_node, "samsung,atna40ct01") ? "ATNA40CT01" : "ATNA33XC20");
 
 	ret = pm_runtime_get_sync(panel->dev);
 	if (ret < 0) {
 		pm_runtime_put_autosuspend(panel->dev);
 		return ret;
+	}
+
+	if (of_device_is_compatible(dev->of_node, "samsung,atna40ct01")) {
+		u8 val[] = {
+			    0x5A, 0x5A, // Unlock
+			    0x01,	// B0 01
+			    0x08,	// B6 08
+			    0x04,	// B0 04
+			    0xA1,	// B3 A1
+			    0x03,	// B0 03
+			    0x00,	// C2 00
+			    0xA5, 0xA5  // Lock
+			   };
+		drm_dp_dpcd_write(aux, 0x0100, &val[0], 2); // Unlock
+		msleep(10);
+		drm_dp_dpcd_write(aux, 0x0100, &val[2], 1); // B0 01
+		drm_dp_dpcd_write(aux, 0x0100, &val[3], 1); // B6 08
+		drm_dp_dpcd_write(aux, 0x0100, &val[4], 1); // B0 04
+		drm_dp_dpcd_write(aux, 0x0100, &val[5], 1); // B3 A1
+		drm_dp_dpcd_write(aux, 0x0100, &val[6], 1); // B0 03
+		drm_dp_dpcd_write(aux, 0x0100, &val[7], 1); // C2 00
+		drm_dp_dpcd_write(aux, 0x0100, &val[8], 2); // Lock
+		msleep(50);
+		val[0] = 0x01; // Sleep-out
+		drm_dp_dpcd_write(aux, 0x0100, val, 1);
+		msleep(120);
+		val[0] = 0x29; // Display-on
+		drm_dp_dpcd_write(aux, 0x0100, val, 1);
+		msleep(20);
+		val[0] = 0x01; // Enable backlight
+		drm_dp_dpcd_write(aux, 0x0720, val, 1);
 	}
 
 	return 0;
@@ -271,6 +367,10 @@ static int atana33xc20_probe(struct dp_aux_ep_device *aux_ep)
 		return -ENOMEM;
 	dev_set_drvdata(dev, panel);
 
+	if (of_device_is_compatible(dev->of_node, "samsung,atna40ct01")) {
+		panel->desc = &atna40ct01;
+	}
+
 	panel->aux = aux_ep->aux;
 
 	panel->supply = devm_regulator_get(dev, "power");
@@ -316,6 +416,10 @@ static int atana33xc20_probe(struct dp_aux_ep_device *aux_ep)
 	if (ret)
 		dev_warn(dev, "failed to register dp aux backlight: %d\n", ret);
 
+	if (of_device_is_compatible(dev->of_node, "samsung,atna40ct01")) {
+		panel->base.backlight->props.max_brightness = 2047; // Fix scaling
+	}
+
 	drm_panel_add(&panel->base);
 
 	return 0;
@@ -333,8 +437,10 @@ static void atana33xc20_remove(struct dp_aux_ep_device *aux_ep)
 
 static const struct of_device_id atana33xc20_dt_match[] = {
 	{ .compatible = "samsung,atna33xc20", },
+	{ .compatible = "samsung,atna40ct01" },
 	{ /* sentinal */ }
 };
+
 MODULE_DEVICE_TABLE(of, atana33xc20_dt_match);
 
 static const struct dev_pm_ops atana33xc20_pm_ops = {

@@ -449,8 +449,7 @@
 		wlan-enable-gpios = <&tlmm 117 GPIO_ACTIVE_HIGH>;
 		bt-enable-gpios = <&tlmm 116 GPIO_ACTIVE_HIGH>;
 
-		pinctrl-0 = <&wcn_wlan_en>;
-		pinctrl-1 = <&wcn_bt_en>;
+		pinctrl-0 = <&wcn_wlan_bt_en>;
 		pinctrl-names = "default";
 
 		regulators {
@@ -1495,25 +1494,17 @@
 		output-low;
 	};
 
-	wcn_bt_en: wcn-bt-en-state {
-		pins = "gpio116";
-		function = "gpio";
-		drive-strength = <16>;
-		output-low;
-		bias-pull-down;
-	};
-
 	wcn_sw_en: wcn-sw-en-state {
 		pins = "gpio214";
 		function = "gpio";
-		drive-strength = <16>;
+		drive-strength = <2>;
 		bias-disable;
 	};
 
-	wcn_wlan_en: wcn-wlan-en-state {
-		pins = "gpio117";
+	wcn_wlan_bt_en: wcn-wlan-bt-en-state {
+		pins = "gpio116", "gpio117";
 		function = "gpio";
-		drive-strength = <16>;
+		drive-strength = <2>;
 		bias-disable;
 	};
 };
@@ -1545,7 +1536,7 @@
 };
 
 &usb_1_ss0_qmpphy {
-	vdda-phy-supply = <&vreg_l3e_1p2>;
+	vdda-phy-supply = <&vreg_l2j_1p2>;
 	vdda-pll-supply = <&vreg_l1j_0p8>;
 
 	status = "okay";

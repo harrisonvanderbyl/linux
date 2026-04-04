@@ -282,37 +282,7 @@ struct fastrpc_invoke_context {
 
 /* Message structures for internal FastRPC calls */
 
-/**
- * struct fastrpc_mem_unmap_req_msg - Memory unmap request message with attributes
- *
- * This message structure is sent to the DSP to request unmapping
- * of a previously mapped memory region (ATTR request).
- */
-struct fastrpc_mem_unmap_req_msg {
-	/* Client identifier for the session */
-	s32 client_id;
-	/* Handle of the buffer */
-	s32 fd;
-	/* Virtual address to unmap from DSP */
-	u64 vaddrin;
-	/* Size of the region to unmap in bytes */
-	u64 len;
-};
-
-/**
- * struct fastrpc_munmap_req_msg - Legacy memory unmap request message
- *
- * This message structure is sent to the DSP to request unmapping
- * of a previously mapped memory region.
- */
-struct fastrpc_munmap_req_msg {
-	/* Client identifier for the session */
-	int client_id;
-	/* Virtual address to unmap from DSP */
-	u64 vaddr;
-	/* Size of the region to unmap in bytes */
-	u64 size;
-};
+/* Message structures for internal FastRPC calls */
 
 /**
  * struct fastrpc_mem_map_req_msg - Memory map request message with attributes
@@ -364,6 +334,46 @@ struct fastrpc_map_rsp_msg {
 	/* DSP virtual address assigned to the mapped buffer */
 	u64 vaddrout;
 };
+
+/**
+ * struct fastrpc_mem_unmap_req_msg - Memory unmap request message with attributes
+ *
+ * This message structure is sent to the DSP to request unmapping
+ * of a previously mapped memory region (ATTR request).
+ */
+struct fastrpc_mem_unmap_req_msg {
+	/* Client identifier for the session */
+	s32 client_id;
+	/* Handle of the buffer */
+	s32 fd;
+	/* Virtual address to unmap from DSP */
+	u64 vaddrin;
+	/* Size of the region to unmap in bytes */
+	u64 len;
+};
+
+/**
+ * struct fastrpc_munmap_req_msg - Legacy memory unmap request message
+ *
+ * This message structure is sent to the DSP to request unmapping
+ * of a previously mapped memory region.
+ */
+struct fastrpc_munmap_req_msg {
+	/* Client identifier for the session */
+	int client_id;
+	/* Virtual address to unmap from DSP */
+	u64 vaddr;
+	/* Size of the region to unmap in bytes */
+	u64 size;
+};
+
+
+/**
+ * struct fastrpc_map_rsp_msg - Memory map response message
+ *
+ * This message structure is returned by the DSP after successfully
+ * mapping a buffer, providing the virtual address for future access.
+ */
 
 /**
  * fastrpc_context_free - Free an invocation context
@@ -420,5 +430,14 @@ int fastrpc_internal_invoke_pack(struct fastrpc_invoke_context *ctx, struct qda_
  * Returns: 0 on success, negative error code on failure
  */
 int fastrpc_internal_invoke_unpack(struct fastrpc_invoke_context *ctx, struct qda_msg *msg);
+
+/**
+ * fastrpc_return_result - Return invocation result to user-space
+ * @ctx: FastRPC invocation context
+ * @argp: User-space pointer to return result
+ *
+ * Returns: 0 on success, negative error code on failure
+ */
+int fastrpc_return_result(struct fastrpc_invoke_context *ctx, char __user *argp);
 
 #endif /* __QDA_FASTRPC_H__ */

@@ -81,13 +81,6 @@
 					};
 				};
 
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss0_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss0_sbu_mux>;
-					};
-				};
 			};
 		};
 
@@ -118,55 +111,11 @@
 					};
 				};
 
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss1_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss1_sbu_mux>;
-					};
-				};
 			};
 		};
 	};
 
 	
-	usb-1-ss0-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 168 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 167 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss0_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss0_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss0_sbu>;
-			};
-		};
-	};
-
-	usb-1-ss1-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 179 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 178 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss1_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss1_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss1_sbu>;
-			};
-		};
-	};
 
 	reserved-memory {
 		linux,cma {
@@ -187,8 +136,6 @@
 		regulator-min-microvolt = <3700000>;
 		regulator-max-microvolt = <3700000>;
 
-		regulator-always-on;
-		regulator-boot-on;
 	};
 
 	vreg_wcn_3p3: regulator-wcn-3p3 {
@@ -204,7 +151,6 @@
 		pinctrl-0 = <&wcn_sw_en>;
 		pinctrl-names = "default";
 
-		regulator-boot-on;
 	};
 
 	vreg_wcn_0p95: regulator-wcn-0p95 {
@@ -376,7 +322,7 @@
 			regulator-min-microvolt = <3072000>;
 			regulator-max-microvolt = <3100000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-boot-on;
+		
 		};
 
 		vreg_l4b_1p8: ldo4 {
@@ -470,6 +416,10 @@
 			regulator-min-microvolt = <2504000>;
 			regulator-max-microvolt = <2504000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
 		};
 	};
 
@@ -539,7 +489,7 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-boot-on;
+			
 		};
 	};
 
@@ -553,15 +503,19 @@
 		vreg_l2e_0p8: ldo2 {
 			regulator-name = "vreg_l2e_0p8";
 			regulator-min-microvolt = <880000>;
-			regulator-max-microvolt = <0xd6d80>;
+			regulator-max-microvolt = <880000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_l3e_1p2: ldo3 {
 			regulator-name = "vreg_l3e_1p2";
-			regulator-min-microvolt = <1200000>;
-			regulator-max-microvolt = <1200000>;
+			regulator-min-microvolt = <1140000>;
+			regulator-max-microvolt = <1260000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
 		};
 	};
 
@@ -636,17 +590,23 @@
 
 		vreg_l2i_1p2: ldo2 {
 			regulator-name = "vreg_l2i_1p2";
-			regulator-min-microvolt = <0x10c8e0>;
+			regulator-min-microvolt = <1100000>;
 			regulator-max-microvolt = <1200000>;
-			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
+
+			regulator-boot-on;
 		};
 
 		vreg_l3i_0p8: ldo3 {
 			regulator-name = "vreg_l3i_0p8";
-			regulator-min-microvolt = <0xc92c0>;
-			regulator-max-microvolt = <0xe2900>;
+			regulator-min-microvolt = <880000>;
+			regulator-max-microvolt = <910000>;
 			regulator-allow-set-load;
 			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
 		};
 	};
 
@@ -776,6 +736,7 @@
 
 	status = "okay";
 };
+
 
 &pcie4_port0 {
 	wifi@0 {
@@ -1046,21 +1007,20 @@
 
 
 &iris {
-	firmware-name = "qcom/x1p42100/qcvss8380.mbn";
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcvss8380.mbn";
 	status="okay";
 };
 
 
 
 &remoteproc_adsp {
-	firmware-name = "qcom/x1p42100/qcadsp8380.mbn", "qcom/x1p42100/adsp_dtbs.elf";
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcadsp8380.mbn", "qcom/x1p42100/Microsoft/Surface12/adsp_dtbs.elf";
 
 	status = "okay";
 };
 
 &remoteproc_cdsp {
-	firmware-name = "qcom/x1p42100/qccdsp8380.mbn", "qcom/x1p42100/cdsp_dtbs.elf";
-
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qccdsp8380.mbn", "qcom/x1p42100/Microsoft/Surface12/cdsp_dtbs.elf";
 	status = "okay";
 };
 
@@ -1095,7 +1055,7 @@
 };
 
 &gpu_zap_shader {
-		firmware-name = "qcom/x1p42100/qcdxkmsucpurwa.mbn";
+		firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn";
 };
 
 &lpass_tlmm {
@@ -1145,7 +1105,6 @@
 		panel {
 			compatible = "edp-panel";
 			//backlight = <&backlight>;
-
 			power-supply = <&vreg_edp_3p3>;
 
 			port {
@@ -1181,6 +1140,20 @@
 	};
 
 
+	vreg_cam_1p8: regulator-cam-1p8 {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VREG_CAM_1P8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+
+		gpio = <&tlmm 91 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		pinctrl-0 = <&cam_ldo_en>;
+		pinctrl-names = "default";
+	};
+
 	// Backlight power regulator
 	vreg_edp_3p3: regulator-edp-3p3 {
 		compatible = "regulator-fixed";
@@ -1208,6 +1181,24 @@
 
 // backlight power control pins
 &tlmm {
+	cam_rgb_default: cam-rgb-default-state {
+		mclk-pins {
+			pins = "gpio100";
+			function = "cam_aon";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		reset-n-pins {
+			pins = "gpio237";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+
+
 		edp_reg_en: edp-reg-en-state {
 		pins = "gpio70";
 		function = "gpio";
@@ -1228,6 +1219,8 @@
 	vcc-max-microamp = <1300000>;
 	vccq-supply = <&vreg_l2i_1p2>;
 	vccq-max-microamp = <1200000>;
+
+	//vdd-hba-supply = <&vreg_l3g_1p2>;
 };
 
 &ufs_mem_phy {
@@ -1392,3 +1385,4 @@
 					};
 				};
 };
+

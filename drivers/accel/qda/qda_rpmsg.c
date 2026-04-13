@@ -296,7 +296,7 @@ static int qda_rpmsg_probe(struct rpmsg_device *rpdev)
 }
 
 static const struct of_device_id qda_rpmsg_id_table[] = {
-	{ .compatible = "qcom,fastrpc" },
+	{ .compatible = "qcom,qda" },
 	{},
 };
 MODULE_DEVICE_TABLE(of, qda_rpmsg_id_table);
@@ -306,7 +306,7 @@ static struct rpmsg_driver qda_rpmsg_driver = {
 	.remove = qda_rpmsg_remove,
 	.callback = qda_rpmsg_cb,
 	.drv = {
-		.name = "qcom,fastrpc",
+		.name = "qcom,qda",
 		.of_match_table = qda_rpmsg_id_table,
 	},
 };

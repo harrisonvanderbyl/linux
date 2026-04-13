@@ -10,6 +10,7 @@ Compute Accelerators
    introduction
    amdxdna/index
    qaic/index
+   qda/index
    rocket/index
 
 .. only::  subproject and html

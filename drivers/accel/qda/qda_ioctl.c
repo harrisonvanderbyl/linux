@@ -192,6 +192,10 @@ static int fastrpc_invoke(int type, struct drm_device *dev, void *data,
 	if (err)
 		goto err_context_free;
 
+	err = fastrpc_return_result(ctx, (char __user *)data);
+	if (err)
+		goto err_context_free;
+
 err_context_free:
 	if (type == FASTRPC_RMID_INIT_RELEASE && qda_user->init_mem_gem_obj) {
 		drm_gem_object_put(&qda_user->init_mem_gem_obj->base);
@@ -265,3 +269,4 @@ int qda_ioctl_munmap(struct drm_device *dev, void *data, struct drm_file *file_p
 		return -EINVAL;
 	}
 }
+

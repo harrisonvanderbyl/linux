@@ -23,12 +23,9 @@ extern "C" {
 #define DRM_QDA_GEM_MMAP_OFFSET	0x02
 #define DRM_QDA_INIT_ATTACH		0x03
 #define DRM_QDA_INIT_CREATE		0x04
-<<<<<<< HEAD
-/* Indexes 0x05-0x06 are reserved for other requests */
-=======
+
 #define DRM_QDA_MAP			0x05
 #define DRM_QDA_MUNMAP			0x06
->>>>>>> accel/qda: Add FastRPC-based DSP memory unmapping support
 #define DRM_QDA_INVOKE			0x07
 
 /*
@@ -182,17 +179,7 @@ struct qda_init_create {
  *   - Uses all fields including attrs and offset
  *   - FD-based MEM_MAP operation with custom SMMU attributes
  */
-struct qda_mem_map {
-	__u32 request;
-	__u32 flags;
-	__s32 fd;
-	__u32 attrs;
-	__u32 offset;
-	__u32 reserved;
-	__u64 vaddrin;
-	__u64 size;
-	__u64 vaddrout;
-};
+
 
 /**
  * struct qda_mem_unmap - Memory unmapping request structure
@@ -219,6 +206,42 @@ struct qda_mem_unmap {
 	__u64 vaddr;
 	__u64 vaddrout;
 	__u64 size;
+};
+
+/**
+ * struct qda_mem_map - Memory mapping request structure
+ * @request: Request type (QDA_MAP_REQUEST_LEGACY or QDA_MAP_REQUEST_ATTR)
+ * @flags: Mapping flags for DSP (cache attributes, permissions)
+ * @fd: Handle of the buffer to map
+ * @attrs: Mapping attributes (used for ATTR request)
+ * @offset: Offset within buffer (used for ATTR request)
+ * @reserved: Reserved for alignment/future use
+ * @vaddrin: Optional virtual address hint for mapping
+ * @size: Size of the memory region to map in bytes
+ * @vaddrout: Output DSP virtual address after successful mapping
+ *
+ * This structure is used to request mapping of a DMA buffer into the
+ * DSP's virtual address space. The DSP will map the buffer according
+ * to the specified flags and return the virtual address in vaddrout.
+ *
+ * For QDA_MAP_REQUEST_LEGACY (value 1):
+ *   - Uses fields: fd, flags, vaddrin, size, vaddrout
+ *   - Legacy MMAP operation for backward compatibility
+ *
+ * For QDA_MAP_REQUEST_ATTR (value 2):
+ *   - Uses all fields including attrs and offset
+ *   - FD-based MEM_MAP operation with custom SMMU attributes
+ */
+struct qda_mem_map {
+	__u32 request;
+	__u32 flags;
+	__s32 fd;
+	__u32 attrs;
+	__u32 offset;
+	__u32 reserved;
+	__u64 vaddrin;
+	__u64 size;
+	__u64 vaddrout;
 };
 
 #if defined(__cplusplus)

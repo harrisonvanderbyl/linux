@@ -18,6 +18,7 @@
 #include <drm/drm_accel.h>
 #include "qda_memory_manager.h"
 
+
 /* Driver identification */
 #define DRIVER_NAME "qda"
 

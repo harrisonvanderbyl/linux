@@ -20,6 +20,7 @@
 #include <dt-bindings/power/qcom,rpmhpd.h>
 #include <dt-bindings/power/qcom-rpmpd.h>
 #include <dt-bindings/soc/qcom,gpr.h>
+#include <dt-bindings/firmware/qcom,scm.h>
 #include <dt-bindings/soc/qcom,rpmh-rsc.h>
 #include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
 #include <dt-bindings/thermal/thermal.h>
@@ -669,6 +670,12 @@
 			no-map;
 		};
 
+
+		global_sync_mem: global-sync@82600000 {
+			reg = <0 0x82600000 0 0x100000>;
+			no-map;
+		};
+
 		xbl_sc_mem: xbl-sc@d8000000 {
 			reg = <0x0 0xd8000000 0x0 0x40000>;
 			no-map;
@@ -833,9 +840,9 @@
 				 <0>,
 				 <0>,
 				 <0>,
-				 <0>,
-				 <0>,
-				 <0>;
+				 <&ufs_mem_phy 0>,
+				 <&ufs_mem_phy 1>,
+				 <&ufs_mem_phy 2>;
 
 			power-domains = <&rpmhpd RPMHPD_CX>;
 			#clock-cells = <1>;
@@ -2849,56 +2856,34 @@
 		};
 
 		ufs_mem_phy: phy@1d80000 {
-			compatible = "qcom,x1e80100-qmp-ufs-phy", "qcom,sm8550-qmp-ufs-phy";
+			compatible = "qcom,x1e80100-qmp-ufs-phy", 
+				"qcom,sm8550-qmp-ufs-phy";
 			reg = <0 0x01d80000 0 0x2000>;
 
 			clocks = <&rpmhcc RPMH_CXO_CLK>,
-				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
+				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+				 <&tcsr TCSR_UFS_PHY_CLKREF_EN>;
+
 			clock-names = "ref",
 				      "ref_aux",
 				      "qref";
+			resets = <&ufs_mem_hc 0>;
+			reset-names = "ufsphy";
 
 			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
 			
-			resets = <&ufs_mem_hc 0>;
-			reset-names = "ufsphy";
+			#clock-cells = <1>;
 			#phy-cells = <0>;
 			status = "disabled";
 		};
-
 		ufs_mem_hc: ufshc@1d84000 {
-			compatible = "qcom,x1e80100-ufshc", "qcom,sm8550-ufshc", "qcom,ufshc",
-				     "jedec,ufs-2.0";
-			reg = <0x0 0x01d84000 0x0 0x3000>;
+			compatible = "qcom,x1e80100-ufshc",
+			"qcom,sm8550-ufshc",
+			"qcom,ufshc";
+			reg = <0 0x01d84000 0 0x3000>;
+
 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
-			phys = <&ufs_mem_phy>;
-			phy-names = "ufsphy";
-			lanes-per-direction = <2>;
-			#reset-cells = <1>;
-			resets = <&gcc GCC_UFS_PHY_BCR>;
-			reset-gpios = <&tlmm 238 1>;
-			reset-names = "rst";
 
-			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-			required-opps = <&rpmhpd_opp_nom>;
-
-			iommus = <&apps_smmu 0x1a0 0x0>;
-			dma-coherent;
-
-			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
-					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
-					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-					 &config_noc SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-
-			interconnect-names = "ufs-ddr", "cpu-ufs";
-			clock-names = "core_clk",
-				      "bus_aggr_clk",
-				      "iface_clk",
-				      "core_clk_unipro",
-				      "ref_clk",
-				      "tx_lane0_sync_clk",
-				      "rx_lane0_sync_clk",
-				      "rx_lane1_sync_clk";
 			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
 				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
 				 <&gcc GCC_UFS_PHY_AHB_CLK>,
@@ -2907,51 +2892,54 @@
 				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
 				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
 				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
+				 clock-names = "core_clk",
+				      "bus_aggr_clk",
+				      "iface_clk",
+				      "core_clk_unipro",
+				      "ref_clk",
+				      "tx_lane0_sync_clk",
+				      "rx_lane0_sync_clk",
+				      "rx_lane1_sync_clk";
+
+
+			resets = <&gcc GCC_UFS_PHY_BCR>;
+			reset-gpios = <&tlmm 238 1>;
+			reset-names = "rst";
+
+			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
+					 &config_noc SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
+			interconnect-names = "ufs-ddr", 
+							"cpu-ufs";
+							
+			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
+			required-opps = <&rpmhpd_opp_nom>;
+
+			iommus = <&apps_smmu 0x1a0 0>;
+			dma-coherent;
+
+			lanes-per-direction = <2>;
+
+			phys = <&ufs_mem_phy>;
+			phy-names = "ufsphy";
+
+			#reset-cells = <1>;
 			qcom,ice = <&ice>;
 
 			status = "disabled";
+			// <min freq, max freq>
+			freq-table-hz = <75000000 300000000>,
+					<0 0>,
+					<0 0>,
+					<75000000 300000000>,
+					<0 0>,
+					<0 0>,
+					<0 0>,
+					<0 0>;
+				 
 
-			operating-points-v2 = <&ufs_opp_table>;
-
-			ufs_opp_table: opp-table {
-				compatible = "operating-points-v2";
-
-				opp-75000000 {
-					opp-hz = /bits/ 64 <75000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <75000000>,
-						 /bits/ 64 <75000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>;
-					required-opps = <&rpmhpd_opp_low_svs>;
-				};
-
-				opp-150000000 {
-					opp-hz = /bits/ 64 <150000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <150000000>,
-						 /bits/ 64 <150000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>;
-					required-opps = <&rpmhpd_opp_svs>;
-				};
-
-				opp-403000000 {
-					opp-hz = /bits/ 64 <403000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <403000000>,
-						 /bits/ 64 <403000000>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>,
-						 /bits/ 64 <0>;
-					required-opps = <&rpmhpd_opp_nom>;
-				};
-			};
+			
 		};
 
 
@@ -4309,6 +4297,9 @@
 					compatible = "qcom,fastrpc";
 					qcom,glink-channels = "fastrpcglink-apps-dsp";
 					label = "adsp";
+					memory-region = <&adsp_rpc_remote_heap_mem>;
+					qcom,vmids = <QCOM_SCM_VMID_LPASS
+						      QCOM_SCM_VMID_ADSP_HEAP>;
 					qcom,non-secure-domain;
 					#address-cells = <1>;
 					#size-cells = <0>;
@@ -9222,16 +9213,20 @@
 			compatible = "qcom,x1e80100-cdsp-pas";
 			reg = <0x0 0x32300000 0x0 0x10000>;
 
+				/* Inputs from turing */
 			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_EDGE_RISING>,
-					      <&smp2p_cdsp_in 0 IRQ_TYPE_EDGE_RISING>,
-					      <&smp2p_cdsp_in 1 IRQ_TYPE_EDGE_RISING>,
-					      <&smp2p_cdsp_in 2 IRQ_TYPE_EDGE_RISING>,
-					      <&smp2p_cdsp_in 3 IRQ_TYPE_EDGE_RISING>;
+						<&smp2p_cdsp_in 0 0>,
+						<&smp2p_cdsp_in 2 0>,
+						<&smp2p_cdsp_in 1 0>,
+						<&smp2p_cdsp_in 3 0>,
+						<&smp2p_cdsp_in 7 0>;
+
 			interrupt-names = "wdog",
-					  "fatal",
-					  "ready",
-					  "handover",
-					  "stop-ack";
+					"fatal",
+					"handover",
+					"ready",
+					"stop-ack",
+					"shutdown-ack";
 
 			clocks = <&rpmhcc RPMH_CXO_CLK>;
 			clock-names = "xo";
@@ -9246,8 +9241,7 @@
 			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ALWAYS
 					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>;
 
-			memory-region = <&cdsp_mem>,
-					<&q6_cdsp_dtb_mem>;
+			memory-region = <&cdsp_mem>, <&q6_cdsp_dtb_mem>, <&global_sync_mem>;
 
 			qcom,qmp = <&aoss_qmp>;
 
@@ -9260,104 +9254,110 @@
 				interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
 							     IPCC_MPROC_SIGNAL_GLINK_QMP
 							     IRQ_TYPE_EDGE_RISING>;
+
 				mboxes = <&ipcc IPCC_CLIENT_CDSP
 						IPCC_MPROC_SIGNAL_GLINK_QMP>;
 
-				label = "cdsp";
 				qcom,remote-pid = <5>;
+
+				label = "cdsp";
 
 				fastrpc {
 					compatible = "qcom,fastrpc";
+
 					qcom,glink-channels = "fastrpcglink-apps-dsp";
+
 					label = "cdsp";
+
 					qcom,non-secure-domain;
+
 					#address-cells = <1>;
 					#size-cells = <0>;
 
 					compute-cb@1 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <1>;
+
 						iommus = <&apps_smmu 0x0c01 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@2 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <2>;
+
 						iommus = <&apps_smmu 0x0c02 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@3 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <3>;
+
 						iommus = <&apps_smmu 0x0c03 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@4 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <4>;
+
 						iommus = <&apps_smmu 0x0c04 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@5 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <5>;
+
 						iommus = <&apps_smmu 0x0c05 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@6 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <6>;
+
 						iommus = <&apps_smmu 0x0c06 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@7 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <7>;
+
 						iommus = <&apps_smmu 0x0c07 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@8 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <8>;
+
 						iommus = <&apps_smmu 0x0c08 0x20>;
-						dma-coherent;
 					};
 
-					/* note: compute-cb@9 is secure */
+					/* note: secure cb9 in downstream */
 
 					compute-cb@10 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <10>;
+
 						iommus = <&apps_smmu 0x0c0c 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@11 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <11>;
+
 						iommus = <&apps_smmu 0x0c0d 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@12 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <12>;
+
 						iommus = <&apps_smmu 0x0c0e 0x20>;
-						dma-coherent;
 					};
 
 					compute-cb@13 {
 						compatible = "qcom,fastrpc-compute-cb";
 						reg = <13>;
+
 						iommus = <&apps_smmu 0x0c0f 0x20>;
-						dma-coherent;
 					};
 				};
 			};

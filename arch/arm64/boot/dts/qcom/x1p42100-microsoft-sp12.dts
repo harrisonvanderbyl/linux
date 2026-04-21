@@ -81,13 +81,6 @@
 					};
 				};
 
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss0_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss0_sbu_mux>;
-					};
-				};
 			};
 		};
 
@@ -118,55 +111,11 @@
 					};
 				};
 
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss1_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss1_sbu_mux>;
-					};
-				};
 			};
 		};
 	};
 
 	
-	usb-1-ss0-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 168 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 167 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss0_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss0_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss0_sbu>;
-			};
-		};
-	};
-
-	usb-1-ss1-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 179 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 178 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss1_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss1_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss1_sbu>;
-			};
-		};
-	};
 
 	reserved-memory {
 		linux,cma {
@@ -187,8 +136,6 @@
 		regulator-min-microvolt = <3700000>;
 		regulator-max-microvolt = <3700000>;
 
-		regulator-always-on;
-		regulator-boot-on;
 	};
 
 	vreg_wcn_3p3: regulator-wcn-3p3 {
@@ -204,7 +151,6 @@
 		pinctrl-0 = <&wcn_sw_en>;
 		pinctrl-names = "default";
 
-		//regulator-boot-on;
 	};
 
 	vreg_wcn_0p95: regulator-wcn-0p95 {
@@ -368,7 +314,6 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-always-on;
 		};
 
 		vreg_l2b_3p0: ldo2 {
@@ -376,6 +321,7 @@
 			regulator-min-microvolt = <3072000>;
 			regulator-max-microvolt = <3100000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		
 		};
 
 		vreg_l4b_1p8: ldo4 {
@@ -425,7 +371,6 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-always-on;
 		};
 
 		vreg_l12b_1p2: ldo12 {
@@ -454,7 +399,6 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-always-on;
 		};
 
 		vreg_l16b_2p9: ldo16 {
@@ -469,6 +413,9 @@
 			regulator-min-microvolt = <2504000>;
 			regulator-max-microvolt = <2504000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -529,7 +476,7 @@
 		vreg_l2d_0p9: ldo2 {
 			regulator-name = "vreg_l2d_0p9";
 			regulator-min-microvolt = <912000>;
-			regulator-max-microvolt = <0xdea80>;
+			regulator-max-microvolt = <920000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
 
@@ -538,6 +485,7 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			
 		};
 	};
 
@@ -551,7 +499,7 @@
 		vreg_l2e_0p8: ldo2 {
 			regulator-name = "vreg_l2e_0p8";
 			regulator-min-microvolt = <880000>;
-			regulator-max-microvolt = <0xd6d80>;
+			regulator-max-microvolt = <880000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
 
@@ -560,6 +508,9 @@
 			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1200000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -634,17 +585,23 @@
 
 		vreg_l2i_1p2: ldo2 {
 			regulator-name = "vreg_l2i_1p2";
-			regulator-min-microvolt = <0x10c8e0>;
+			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1200000>;
-			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
+
 		};
 
 		vreg_l3i_0p8: ldo3 {
 			regulator-name = "vreg_l3i_0p8";
-			regulator-min-microvolt = <0xc92c0>;
-			regulator-max-microvolt = <0xe2900>;
+			regulator-min-microvolt = <880000>;
+			regulator-max-microvolt = <880000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-allow-set-load;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -681,8 +638,11 @@
 		vreg_l3j_0p8: ldo3 {
 			regulator-name = "vreg_l3j_0p8";
 			regulator-min-microvolt = <880000>;
-			regulator-max-microvolt = <920000>;
+			regulator-max-microvolt = <880000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 };
@@ -775,6 +735,7 @@
 	status = "okay";
 };
 
+
 &pcie4_port0 {
 	wifi@0 {
 		compatible = "pci17cb,1107";
@@ -851,28 +812,6 @@
 		output-low;
 	};
 
-	/* pcie4_default: pcie4-default-state {
-		clkreq-n-pins {
-			pins = "gpio147";
-			function = "pcie4_clk";
-			drive-strength = <2>;
-			bias-pull-up;
-		};
-
-		perst-n-pins {
-			pins = "gpio146";
-			function = "gpio";
-			drive-strength = <2>;
-			bias-disable;
-		};
-
-		wake-n-pins {
-			pins = "gpio148";
-			function = "gpio";
-			drive-strength = <2>;
-			bias-pull-up;
-		};
-	}; */
 
 	wcn_sw_en: wcn-sw-en-state {
 		pins = "gpio214";
@@ -909,52 +848,7 @@
 			drive-strength = <16>;
 		};
 	};
-			
-	usb_1_ss0_sbu_default: usb-1-ss0-sbu-state {
-
-		oe-n-pins {
-			pins = "gpio167";
-			function = "gpio";
-			bias-pull-up;
-			drive-strength = <0x02>;
-		};
-
-		sel-pins {
-			pins = "gpio168";
-			function = "gpio";
-			bias-pull-up;
-			drive-strength = <0x02>;
-		};
-	};
-
-	usb_1_ss1_sbu_default: usb-1-ss1-sbu-state {
-
-		oe-n-pins {
-			pins = "gpio178";
-			function = "gpio";
-			bias-pull-up;
-			drive-strength = <0x02>;
-		};
-
-		sel-pins {
-			pins = "gpio179";
-			function = "gpio";
-			bias-pull-up;
-			drive-strength = <0x02>;
-		};
-	};
-
-	nfc-default-state {
-		pins = "gpio124", "gpio192", "gpio992";
-		function = "gpio";
-		drive-strength = <0x02>;
-		bias-disable;
-				
-	};
-
-
-
-
+	
 };
 
 &uart2 {
@@ -1044,21 +938,20 @@
 
 
 &iris {
-	firmware-name = "qcom/x1p42100/qcvss8380.mbn";
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcvss8380.mbn";
 	status="okay";
 };
 
 
 
 &remoteproc_adsp {
-	firmware-name = "qcom/x1p42100/qcadsp8380.mbn", "qcom/x1p42100/adsp_dtbs.elf";
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcadsp8380.mbn", "qcom/x1p42100/Microsoft/Surface12/adsp_dtbs.elf";
 
 	status = "okay";
 };
 
 &remoteproc_cdsp {
-	firmware-name = "qcom/x1p42100/qccdsp8380.mbn", "qcom/x1p42100/cdsp_dtbs.elf";
-
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qccdsp8380.mbn", "qcom/x1p42100/Microsoft/Surface12/cdsp_dtbs.elf";
 	status = "okay";
 };
 
@@ -1093,7 +986,7 @@
 };
 
 &gpu_zap_shader {
-		firmware-name = "qcom/x1p42100/qcdxkmsucpurwa.mbn";
+		firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn";
 };
 
 &lpass_tlmm {
@@ -1143,7 +1036,6 @@
 		panel {
 			compatible = "edp-panel";
 			//backlight = <&backlight>;
-
 			power-supply = <&vreg_edp_3p3>;
 
 			port {
@@ -1179,6 +1071,8 @@
 	};
 
 
+
+
 	// Backlight power regulator
 	vreg_edp_3p3: regulator-edp-3p3 {
 		compatible = "regulator-fixed";
@@ -1206,6 +1100,24 @@
 
 // backlight power control pins
 &tlmm {
+	cam_rgb_default: cam-rgb-default-state {
+		mclk-pins {
+			pins = "gpio100";
+			function = "cam_aon";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		reset-n-pins {
+			pins = "gpio237";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+
+
 		edp_reg_en: edp-reg-en-state {
 		pins = "gpio70";
 		function = "gpio";
@@ -1216,177 +1128,23 @@
 };
 
 
+
+
 &ufs_mem_hc {
 	status = "okay";
 
 	vcc-supply = <&vreg_l17b_2p5>;
-	vcc-max-microamp = <600000>;
-
+	vcc-max-microamp = <800000>;
 	vccq-supply = <&vreg_l2i_1p2>;
-	vccq-max-microamp = <600000>;
+	vccq-max-microamp = <900000>;
+
+	vdd-hba-supply = <&vreg_l3j_0p8>;
 };
 
 &ufs_mem_phy {
 	status = "okay";
 
-	//vdda-phy-supply = <&vreg_l2c_0p8>;
 	vdda-phy-supply = <&vreg_l3i_0p8>;
-	//vdda-pll-supply = <&vreg_l12b_1p2>;
 	vdda-pll-supply = <&vreg_l3e_1p2>;
 };
 
-
-// some extra sensors that probably dont have drivers yet	
-&i2c4 {
-	status = "okay";
-	clock-frequency = <0x61a80>;
-	max34417_1@1a {
-					compatible = "maxim,max34417";
-					reg = <0x1a>;
-					status = "okay";
-
-					channel0 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_CAMF_1P8V";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel1 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_TOUCH_3P3V";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel2 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_NSP";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-
-					channel3 {
-						compatible = "maxim,max34417-channel";
-						label = "WIFI_0P95V";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-				};
-
-				max34417_2@16 {
-					compatible = "maxim,max34417";
-					reg = <0x16>;
-					status = "okay";
-
-					channel0 {
-						compatible = "maxim,max34417-channel";
-						label = "WIFI_3P86V_1P95V";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-
-					channel1 {
-						compatible = "maxim,max34417-channel";
-						label = "UFS_2P5V";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-
-					channel2 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_CPU_APC1";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-
-					channel3 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_CPU_APC0";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-				};
-
-				max34417_3@18 {
-					compatible = "maxim,max34417";
-					reg = <0x18>;
-					status = "okay";
-
-					channel0 {
-						compatible = "maxim,max34417-channel";
-						label = "SYS_1A";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-
-					channel1 {
-						compatible = "maxim,max34417-channel";
-						label = "SYS_1B";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-
-					channel2 {
-						compatible = "maxim,max34417-channel";
-						label = "SYS_ROP_LEFT";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-
-					channel3 {
-						compatible = "maxim,max34417-channel";
-						label = "SYS_ROP_RIGHT";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-				};
-
-				max34417_4@14 {
-					compatible = "maxim,max34417";
-					reg = <0x14>;
-					status = "okay";
-
-					channel0 {
-						compatible = "maxim,max34417-channel";
-						label = "DISPLAY_PANEL_3P3V";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel1 {
-						compatible = "maxim,max34417-channel";
-						label = "DISPLAY_PANEL_SYS";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel2 {
-						compatible = "maxim,max34417-channel";
-						label = "UFS_1P2V";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-
-					channel3 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_GPU";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-				};
-
-				max34417_5@12 {
-					compatible = "maxim,max34417";
-					reg = <0x12>;
-					status = "okay";
-
-					channel0 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_PEN_5VSB";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel1 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_BLADE";
-						maxim,rsense-val-micro-ohms = <0x14>;
-					};
-
-					channel2 {
-						compatible = "maxim,max34417-channel";
-						label = "PMI_WSA_LEFT";
-						maxim,rsense-val-micro-ohms = <0x0a>;
-					};
-
-					channel3 {
-						compatible = "maxim,max34417-channel";
-						label = "MAINMEM_VDD2H";
-						maxim,rsense-val-micro-ohms = <0x05>;
-					};
-				};
-};

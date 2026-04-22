@@ -528,6 +528,7 @@ static int imx_rproc_prepare(struct rproc *rproc)
 		rproc_coredump_add_segment(rproc, da, resource_size(&res));
 		rproc_add_carveout(rproc, mem);
 	}
+	return 1;
 }
 
 static int imx_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)

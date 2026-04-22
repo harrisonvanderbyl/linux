@@ -991,7 +991,7 @@
 	status = "okay";
 };
 
-&pcie3_port {
+&pcie3_port0 {
 	vpcie12v-supply = <&vreg_pcie_12v>;
 	vpcie3v3-supply = <&vreg_pcie_3v3>;
 	vpcie3v3aux-supply = <&vreg_pcie_3v3_aux>;

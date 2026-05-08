@@ -166,8 +166,8 @@
 	power-domain-names = "ife0",
 			     "top";
 
-	phys = <&csiphy0 PHY_TYPE_DPHY>,
-	       <&csiphy4 PHY_TYPE_DPHY>;
+	phys = <&csiphy0 PHY_QCOM_CSI2_MODE_DPHY>,
+	       <&csiphy4 PHY_QCOM_CSI2_MODE_DPHY>;
 	phy-names = "csiphy0",
 		    "csiphy4";
 

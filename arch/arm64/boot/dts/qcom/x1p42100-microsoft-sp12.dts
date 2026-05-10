@@ -734,6 +734,201 @@
 	
 		};
 	};
+
+	regulators-8 {
+		compatible = "qcom,pm8010-rpmh-regulators";
+		qcom,pmic-id = "m";
+
+		vdd-l1-l2-supply = <&vreg_s5j_1p2>;
+		vdd-l3-l4-supply = <&vreg_s4c_1p8>;
+		vdd-l7-supply = <&vreg_bob1>;
+
+		vreg_l1m_1p2: ldo1 {
+			regulator-name = "vreg_l1m_1p2";
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1260000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vreg_l2m_1p2: ldo2 {
+			regulator-name = "vreg_l2m_1p2";
+			regulator-min-microvolt = <1150000>;
+			regulator-max-microvolt = <1200000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vreg_l3m_1p8: ldo3 {
+			regulator-name = "vreg_l3m_1p8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;	
+			regulator-boot-on;
+			regulator-always-on;	
+		};
+
+		vreg_l4m_1p8: ldo4 {
+			regulator-name = "vreg_l4m_1p8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vreg_l5m_2p8: ldo5 {
+			regulator-name = "vreg_l5m_2p8";
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vreg_l6m_1p8: ldo6 {
+			regulator-name = "vreg_l6m_1p8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vreg_l7m_2p8: ldo7 {
+			regulator-name = "vreg_l7m_2p8";
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+	};
+};
+
+&camss {
+	status = "okay";
+	vdd-csiphy-0p8-supply = <&vreg_l2c_0p8>;
+	vdd-csiphy-1p2-supply = <&vreg_l1c_1p2>;
+
+	 ports {
+        /*
+         * port0 => csiphy0
+         * port1 => csiphy4
+         */
+		port@0 {
+            csiphy0_ep: endpoint@0 {
+                reg = <0>;
+                clock-lanes = <7>;
+                data-lanes = <0 1 2 3>;  /* 4 lanes for OV13858 */
+                remote-endpoint = <&ov13858_ep>;
+            };
+        };
+        port@1 {
+            csiphy4_ep: endpoint@4 {
+                reg = <4>;
+                clock-lanes = <7>;
+                data-lanes = <0 1>;
+                remote-endpoint = <&ov02c10_ep>;
+            };
+        };
+    };
+};
+
+&cci0 {
+	status = "okay";
+};
+
+&cci1 {
+	status = "okay";
+};
+
+&cci0_i2c1 {
+	clock-frequency = <1000000>;
+	pinctrl-0 = <&cci0_default>;
+    pinctrl-1 = <&cci0_sleep>;
+    pinctrl-names = "default", "sleep";
+    status = "okay";
+	camera@10 {
+		compatible = "ovti,ov13858";
+		
+		reg = <0x10>;
+
+		reset-gpios = <&tlmm 110 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_rgb_rev_default>;
+
+		clocks = <&camcc CAM_CC_MCLK1_CLK>;
+		assigned-clocks = <&camcc CAM_CC_MCLK1_CLK>;
+		assigned-clock-rates = <19200000>;   /* not 19.2 MHz! */
+		
+		orientation = <1>;
+		rotation = <180>;
+
+		dovdd-supply = <&vreg_l3m_1p8>;   /* 1.8V — LDO6_M  */
+		dvdd-supply  = <&vreg_l1m_1p2>;   /* 1.2V — LDO1_M  */
+		avdd-supply  = <&vreg_l5m_2p8>;   /* 2.8V — LDO5_M  */
+
+		port {
+			ov13858_ep: endpoint {
+				data-lanes = <1 2 3 4>;
+				link-frequencies = /bits/ 64 <540000000 270000000>;
+				remote-endpoint = <&csiphy0_ep>;
+			};
+		};
+	};
+};
+                                                                   
+
+
+&cci1_i2c1 {
+	clock-frequency = <1000000>;
+	pinctrl-0 = <&cci1_default>;
+    pinctrl-1 = <&cci1_sleep>;
+    pinctrl-names = "default", "sleep";
+    status = "okay";
+	camera@36 {
+		compatible = "ovti,ov02c10";
+		reg = <0x36>;
+
+		reset-gpios = <&tlmm 237 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_rgb_default>;
+
+		clocks = <&camcc CAM_CC_MCLK4_CLK>;
+		assigned-clocks = <&camcc CAM_CC_MCLK4_CLK>;
+		assigned-clock-rates = <12000000>;   /* not 19.2 MHz! */
+
+		orientation = <0>;
+
+		avdd-supply = <&vreg_l7b_2p8>;
+		dovdd-supply = <&vreg_l3m_1p8>;
+
+		port {
+			ov02c10_ep: endpoint {
+				data-lanes = <1 2>;
+				link-frequencies = /bits/ 64 <400000000>;
+				remote-endpoint = <&csiphy4_ep>;
+			};
+		};
+	};
+};
+
+&csiphy4 {
+	vdda-0p9-supply = <&vreg_l2c_0p8>;  /* yes, 0p9 is the property name even though the actual rail is 0.8V */
+    vdda-1p2-supply = <&vreg_l1c_1p2>;
+
+	status = "okay";
+};
+
+
+&csiphy0 {
+    vdda-0p9-supply = <&vreg_l2c_0p8>;
+    vdda-1p2-supply = <&vreg_l1c_1p2>;
+
+	status = "okay";
 };
 
 &gpu {
@@ -779,6 +974,11 @@
 &i2c9 {
 	clock-frequency = <400000>;
 
+	status = "okay";
+};
+
+&iris {
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcvss8380_pa.mbn";
 	status = "okay";
 };
 
@@ -991,6 +1191,38 @@
 &tlmm {
 	gpio-reserved-ranges = <34 2>, /* Unused */
 			       <44 4>; /* SPI (TPM) */
+
+	cam_rgb_default: cam-rgb-default-state {
+		mclk-pins {
+			pins = "gpio100";
+			function = "cam_aon";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		reset-n-pins {
+			pins = "gpio237";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	cam_rgb_rev_default: cam-rgb-rev-default-state {
+		mclk-pins {
+			pins = "gpio97";
+			function = "cam_mclk";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		reset-n-pins {
+			pins = "gpio110";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
 
 	edp_reg_en: edp-reg-en-state {
 		pins = "gpio70";

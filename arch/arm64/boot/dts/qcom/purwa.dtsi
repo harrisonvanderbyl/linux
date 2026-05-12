@@ -37,6 +37,8 @@
 /delete-node/ &thermal_gpuss_5;
 /delete-node/ &thermal_gpuss_6;
 /delete-node/ &thermal_gpuss_7;
+/delete-node/ &csiphy1;
+/delete-node/ &csiphy2;
 
 &camss {
 	compatible = "qcom,x1p42100-camss";
@@ -160,6 +162,11 @@
 			<&camcc CAM_CC_TITAN_TOP_GDSC>;
 	power-domain-names = "ife0",
 			     "top";
+
+	phys = <&csiphy0 PHY_QCOM_CSI2_MODE_DPHY>,
+	       <&csiphy4 PHY_QCOM_CSI2_MODE_DPHY>;
+	phy-names = "csiphy0",
+		    "csiphy4";
 
 	status = "disabled";
 

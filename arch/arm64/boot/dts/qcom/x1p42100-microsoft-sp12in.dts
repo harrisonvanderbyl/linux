@@ -99,7 +99,6 @@
 				   "charge_limit_end",
 				   "charge_limit_delta";
 
-
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
 					<&tlmm 123 GPIO_ACTIVE_HIGH>;
 
@@ -414,6 +413,9 @@
 			regulator-min-microvolt = <3008000>;
 			regulator-max-microvolt = <3960000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_bob2: bob2 {
@@ -421,6 +423,9 @@
 			regulator-min-microvolt = <2504000>;
 			regulator-max-microvolt = <3008000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_l1b_1p8: ldo1 {
@@ -435,6 +440,9 @@
 			regulator-min-microvolt = <3072000>;
 			regulator-max-microvolt = <3100000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_l4b_1p8: ldo4 {
@@ -456,6 +464,9 @@
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <2960000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_l7b_2p8: ldo7 {
@@ -499,6 +510,9 @@
 			regulator-min-microvolt = <3072000>;
 			regulator-max-microvolt = <3100000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_l14b_3p0: ldo14 {
@@ -530,9 +544,6 @@
 			regulator-min-microvolt = <2504000>;
 			regulator-max-microvolt = <2504000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-allow-set-load;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -619,9 +630,6 @@
 			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1200000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-allow-set-load;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -712,9 +720,6 @@
 			regulator-min-microvolt = <880000>;
 			regulator-max-microvolt = <880000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-allow-set-load;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -732,7 +737,6 @@
 			regulator-max-microvolt = <1260000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 
 		vreg_l2m_1p2: ldo2 {
@@ -741,7 +745,6 @@
 			regulator-max-microvolt = <1200000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 
 		vreg_l3m_1p8: ldo3 {
@@ -750,7 +753,6 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;	
 			regulator-boot-on;
-			regulator-always-on;	
 		};
 
 		vreg_l4m_1p8: ldo4 {
@@ -759,7 +761,6 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 
 		vreg_l5m_2p8: ldo5 {
@@ -768,7 +769,6 @@
 			regulator-max-microvolt = <2800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 
 		vreg_l6m_1p8: ldo6 {
@@ -777,7 +777,6 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 
 		vreg_l7m_2p8: ldo7 {
@@ -786,7 +785,6 @@
 			regulator-max-microvolt = <2800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
-			regulator-always-on;
 		};
 	};
 };
@@ -975,6 +973,25 @@
 	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn";
 };
 
+&i2c0 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+};
+
+&i2c4 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+
+	/* MAX34417 @12 */
+	/* MAX34417 @14 */
+	/* MAX34417 @16 */
+	/* MAX34417 @18 */
+	/* MAX34417 @1a */
+};
+
+
 &i2c8 {
 	clock-frequency = <1000000>;
 
@@ -995,22 +1012,12 @@
 	};
 };
 
-&i2c0 {
-	clock-frequency = <400000>;
-
-	status = "okay";
-};
-
-&i2c4 {
-	clock-frequency = <400000>;
-
-	status = "okay";
-};
-
 &i2c9 {
 	clock-frequency = <400000>;
 
 	status = "okay";
+
+	// NFC @28, commercial devices
 };
 
 &lpass_tlmm {
@@ -1227,14 +1234,6 @@
 		pins = "gpio2";
 		function = "gpio";
 		bias-disable;
-	};
-
-	panel_pins: panel-pins-state {
-		pins = "gpio29";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-		output-low;
 	};
 
 	cam_indicator_en: cam-indicator-en-state {

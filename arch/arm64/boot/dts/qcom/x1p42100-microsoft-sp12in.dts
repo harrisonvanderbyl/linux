@@ -42,7 +42,7 @@
 	gpio-keys {
 		compatible = "gpio-keys";
 
-		pinctrl-0 = <&hall_int_n_default>;
+		pinctrl-0 = <&hall_int_n_default>, <&vol_up_n_default>, <&vol_down_n_default>;
 		pinctrl-names = "default";
 
 		switch-lid {
@@ -200,6 +200,25 @@
 		pinctrl-names = "default";
 
 		regulator-boot-on;
+		vin-supply = <&vreg_panel_en>;
+	};
+
+	vreg_panel_en: regulator-panel-en {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VREG_PANEL_EN";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		gpio = <&tlmm 29 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		regulator-enable-ramp-delay = <150000>;
+
+		pinctrl-0 = <&panel_en>;
+		pinctrl-names = "default";
+
+		regulator-boot-on;
 	};
 
 	vph_pwr: regulator-vph-pwr {
@@ -250,19 +269,17 @@
 		audio-routing = "SpkrLeft IN", "WSA WSA_SPK1 OUT",
 				"SpkrRight IN", "WSA WSA_SPK2 OUT",
 				"VA DMIC0", "vdd-micb",
-				"VA DMIC1", "vdd-micb",
-				"VA DMIC2", "vdd-micb",
-				"VA DMIC3", "vdd-micb";
+				"VA DMIC1", "vdd-micb";
 
 		va-dai-link {
 			link-name = "VA Capture";
 
-			cpu {
-				sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
-			};
-
 			codec {
 				sound-dai = <&lpass_vamacro 0>;
+			};
+
+			cpu {
+				sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
 			};
 
 			platform {
@@ -273,13 +290,13 @@
 		wsa-dai-link {
 			link-name = "WSA Playback";
 
-			cpu {
-				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
-			};
-
 			codec {
 				sound-dai = <&left_spkr>, <&right_spkr>,
 						<&swr0 0>, <&lpass_wsamacro 0>;
+			};
+
+			cpu {
+				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
 			};
 
 			platform {
@@ -350,8 +367,8 @@
 	usb-1-ss0-sbu-mux {
 		compatible = "onnn,fsusb42", "gpio-sbu-mux";
 
-		enable-gpios = <&tlmm 168 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 167 GPIO_ACTIVE_HIGH>;
+		enable-gpios = <&tlmm 167 GPIO_ACTIVE_LOW>;
+		select-gpios = <&tlmm 168 GPIO_ACTIVE_HIGH>;
 
 		pinctrl-0 = <&usb_1_ss0_sbu_default>;
 		pinctrl-names = "default";
@@ -369,8 +386,8 @@
 	usb-1-ss1-sbu-mux {
 		compatible = "onnn,fsusb42", "gpio-sbu-mux";
 
-		enable-gpios = <&tlmm 179 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 178 GPIO_ACTIVE_HIGH>;
+		enable-gpios = <&tlmm 178 GPIO_ACTIVE_LOW>;
+		select-gpios = <&tlmm 179 GPIO_ACTIVE_HIGH>;
 
 		pinctrl-0 = <&usb_1_ss1_sbu_default>;
 		pinctrl-names = "default";
@@ -384,7 +401,6 @@
 			};
 		};
 	};
-
 };
 
 &iris {
@@ -413,9 +429,6 @@
 			regulator-min-microvolt = <3008000>;
 			regulator-max-microvolt = <3960000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-			regulator-allow-set-load;
-			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-						   RPMH_REGULATOR_MODE_HPM>;
 		};
 
 		vreg_bob2: bob2 {
@@ -475,6 +488,7 @@
 			regulator-max-microvolt = <2800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-always-on;
+			regulator-boot-on;
 		};
 
 		vreg_l8b_3p0: ldo8 {
@@ -544,6 +558,9 @@
 			regulator-min-microvolt = <2504000>;
 			regulator-max-microvolt = <2504000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -630,6 +647,9 @@
 			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1200000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -720,6 +740,9 @@
 			regulator-min-microvolt = <880000>;
 			regulator-max-microvolt = <880000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+			regulator-allow-set-load;
+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+						   RPMH_REGULATOR_MODE_HPM>;
 		};
 	};
 
@@ -737,6 +760,7 @@
 			regulator-max-microvolt = <1260000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l2m_1p2: ldo2 {
@@ -745,6 +769,7 @@
 			regulator-max-microvolt = <1200000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l3m_1p8: ldo3 {
@@ -753,6 +778,7 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;	
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l4m_1p8: ldo4 {
@@ -761,6 +787,7 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l5m_2p8: ldo5 {
@@ -769,6 +796,7 @@
 			regulator-max-microvolt = <2800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l6m_1p8: ldo6 {
@@ -777,6 +805,7 @@
 			regulator-max-microvolt = <1800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 
 		vreg_l7m_2p8: ldo7 {
@@ -785,6 +814,7 @@
 			regulator-max-microvolt = <2800000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 			regulator-boot-on;
+			regulator-always-on;
 		};
 	};
 };
@@ -812,11 +842,11 @@
         port@1 {
 
 			
-			/*camss_csiphy4_inep1: endpoint@1 {
+			camss_csiphy4_inep1: endpoint@0 {
 				clock-lanes = <7>;
 				data-lanes = <2>;
 				remote-endpoint = <&vd55g1_ep>;
-			};*/
+			};
 			
             csiphy4_ep: endpoint@1 {
                 reg = <1>;
@@ -910,7 +940,6 @@
 	};
 };
 
-/*
 &cci0_i2c0 {
 	clock-frequency = <1000000>;
 	pinctrl-0 = <&cci0_default>;
@@ -948,7 +977,7 @@
 		};
 		
 	};
-};*/
+};
 
 &csiphy4 {
 	vdda-0p9-supply = <&vreg_l2c_0p8>;
@@ -973,25 +1002,6 @@
 	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn";
 };
 
-&i2c0 {
-	clock-frequency = <400000>;
-
-	status = "okay";
-};
-
-&i2c4 {
-	clock-frequency = <400000>;
-
-	status = "okay";
-
-	/* MAX34417 @12 */
-	/* MAX34417 @14 */
-	/* MAX34417 @16 */
-	/* MAX34417 @18 */
-	/* MAX34417 @1a */
-};
-
-
 &i2c8 {
 	clock-frequency = <1000000>;
 
@@ -1012,12 +1022,30 @@
 	};
 };
 
-&i2c9 {
+&i2c0 {
 	clock-frequency = <400000>;
 
 	status = "okay";
+};
 
-	// NFC @28, commercial devices
+&i2c4 {
+	clock-frequency = <400000>;
+
+	/* MAX34417 @12 */
+	/* MAX34417 @14 */
+	/* MAX34417 @16 */
+	/* MAX34417 @18 */
+	/* MAX34417 @1a */
+
+	status = "okay";
+};
+
+&i2c9 {
+	clock-frequency = <400000>;
+
+	// NFC @28, commercial devices only
+
+	status = "okay";
 };
 
 &lpass_tlmm {
@@ -1062,8 +1090,8 @@
 &mdss_dp3 {
 	/delete-property/ #sound-dai-cells;
 
-	pinctrl-names = "default";
 	pinctrl-0 = <&edp0_hpd_default>;
+	pinctrl-names = "default";
 
 	status = "okay";
 
@@ -1119,7 +1147,6 @@
 };
 
 &pcie4_port0 {
-
 	reset-gpios = <&tlmm 146 GPIO_ACTIVE_LOW>;
 	wake-gpios = <&tlmm 148 GPIO_ACTIVE_LOW>;
 
@@ -1136,6 +1163,24 @@
 		vddrfa1p8-supply = <&vreg_pmu_rfa_1p8>;
 		vddpcie0p9-supply = <&vreg_pmu_pcie_0p9>;
 		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
+	};
+};
+
+&pm8550_gpios {
+    vol_up_n_default: vol-up-n-state {
+		pins = "gpio8";
+		function = "normal";
+		power-source = <1>;
+		bias-pull-up;
+		input-enable;
+	};
+
+    vol_down_n_default: vol-down-n-state {
+		pins = "gpio6";
+		function = "normal";
+		power-source = <1>;
+		bias-pull-up;
+		input-enable;
 	};
 };
 
@@ -1227,12 +1272,18 @@
 		function = "gpio";
 		drive-strength = <2>;
 		bias-disable;
-		output-high;
 	};
 
 	hall_int_n_default: hall-int-n-state {
 		pins = "gpio2";
 		function = "gpio";
+		bias-disable;
+	};
+
+	panel_en: panel-en-state {
+		pins = "gpio29";
+		function = "gpio";
+		drive-strength = <2>;
 		bias-disable;
 	};
 
@@ -1302,34 +1353,49 @@
 	};
 
 	usb_1_ss0_sbu_default: usb-1-ss0-sbu-state {
-		oe-n-pins {
-			pins = "gpio168";
+		mode-pins {
+			pins = "gpio166";
 			function = "gpio";
-			bias-disable;
+			bias-pull-up;
+			drive-strength = <2>;
+			output-high;
+		};
+
+		oe-n-pins {
+			pins = "gpio167";
+			function = "gpio";
+			bias-pull-up;
 			drive-strength = <2>;
 		};
 
 		sel-pins {
-			pins = "gpio167";
+			pins = "gpio168";
 			function = "gpio";
-			bias-disable;
+			bias-pull-up;
 			drive-strength = <2>;
 		};
-
 	};
 
 	usb_1_ss1_sbu_default: usb-1-ss1-sbu-state {
-		oe-n-pins {
-			pins = "gpio179";
+		mode-pins {
+			pins = "gpio177";
 			function = "gpio";
-			bias-disable;
+			bias-pull-up;
+			drive-strength = <2>;
+			output-high;
+		};
+
+		oe-n-pins {
+			pins = "gpio178";
+			function = "gpio";
+			bias-pull-up;
 			drive-strength = <2>;
 		};
 
 		sel-pins {
-			pins = "gpio178";
+			pins = "gpio179";
 			function = "gpio";
-			bias-disable;
+			bias-pull-up;
 			drive-strength = <2>;
 		};
 	};
@@ -1416,14 +1482,14 @@
 };
 
 &ufs_mem_hc {
-	status = "okay";
-
 	vcc-supply = <&vreg_l17b_2p5>;
 	vcc-max-microamp = <800000>;
 	vccq-supply = <&vreg_l2i_1p2>;
 	vccq-max-microamp = <900000>;
 
 	vdd-hba-supply = <&vreg_l3j_0p8>;
+
+	status = "okay";
 };
 
 &ufs_mem_phy {
@@ -1443,15 +1509,16 @@
 };
 
 &usb_1_ss0_qmpphy {
-	vdda-phy-supply = <&vreg_l3e_1p2>;
+	vdda-phy-supply = <&vreg_l2j_1p2>;
 	vdda-pll-supply = <&vreg_l1j_0p8>;
 
 	status = "okay";
 };
 
 &usb_1_ss0 {
-	status = "okay";
 	dr_mode = "host";
+
+	status = "okay";
 };
 
 &usb_1_ss0_dwc3_hs {
@@ -1479,8 +1546,9 @@
 };
 
 &usb_1_ss1 {
-	status = "okay";
 	dr_mode = "host";
+
+	status = "okay";
 };
 
 &usb_1_ss1_dwc3_hs {

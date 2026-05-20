@@ -265,7 +265,7 @@
 
 	sound {
 		compatible = "qcom,x1e80100-sndcard";
-		model = "X1P42100-Microsoft-Surface-Pro-12in";
+		model = "X1P42100-Surface12";
 		audio-routing = "SpkrLeft IN", "WSA WSA_SPK1 OUT",
 				"SpkrRight IN", "WSA WSA_SPK2 OUT",
 				"VA DMIC0", "vdd-micb",
@@ -843,11 +843,10 @@
 
 			
 			camss_csiphy4_inep1: endpoint@0 {
-				clock-lanes = <7>;
-				data-lanes = <2>;
+				clock-lanes = <0>;
+				data-lanes = <0>;
 				remote-endpoint = <&vd55g1_ep>;
 			};
-			
             csiphy4_ep: endpoint@1 {
                 reg = <1>;
                 clock-lanes = <7>;
@@ -918,9 +917,10 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&cam_rgb_default>;
 
+
 		clocks = <&camcc CAM_CC_MCLK4_CLK>;
 		assigned-clocks = <&camcc CAM_CC_MCLK4_CLK>;
-		assigned-clock-rates = <12000000>;  
+		assigned-clock-rates = <12000000>; 
 
 		orientation = <0>;
 
@@ -940,6 +940,7 @@
 	};
 };
 
+
 &cci0_i2c0 {
 	clock-frequency = <1000000>;
 	pinctrl-0 = <&cci0_default>;
@@ -956,6 +957,7 @@
 		pinctrl-0 = <&cam_ir_default>;
 
 		clocks = <&camcc CAM_CC_MCLK0_CLK>;
+        clock-names = "xvclk";
 		assigned-clocks = <&camcc CAM_CC_MCLK0_CLK>;
 		assigned-clock-rates = <19200000>;
 
@@ -969,15 +971,17 @@
 		
 		port {
 			vd55g1_ep: endpoint {
+				clock-lanes = <0>;
 				data-lanes = <1>;
-
-				link-frequencies = /bits/ 64 <600000000>;
+				clock-noncontinuous;
+				lane-polarities = <0 0>;
+				link-frequencies = /bits/ 64 <400000000>;
 				remote-endpoint = <&camss_csiphy4_inep1>;
 			};
 		};
-		
 	};
 };
+
 
 &csiphy4 {
 	vdda-0p9-supply = <&vreg_l2c_0p8>;
@@ -1247,7 +1251,7 @@
 		sound-name-prefix = "SpkrLeft";
 		vdd-1p8-supply = <&vreg_l15b_1p8>;
 		vdd-io-supply = <&vreg_l12b_1p2>;
-		qcom,port-mapping = <1 2 3 7 10 13>;
+		qcom,port-mapping = <1 2 3 7 8 13>;
 	};
 
 	/* WSA8845, Right speaker */
@@ -1259,7 +1263,7 @@
 		sound-name-prefix = "SpkrRight";
 		vdd-1p8-supply = <&vreg_l15b_1p8>;
 		vdd-io-supply = <&vreg_l12b_1p2>;
-		qcom,port-mapping = <4 5 6 7 11 13>;
+		qcom,port-mapping = <4 5 6 7 9 13>;
 	};
 };
 

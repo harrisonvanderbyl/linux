@@ -1203,6 +1203,7 @@ properties:
               - asus,vivobook-s15-x1p4
               - hp,omnibook-x14-fe1
               - lenovo,thinkbook-16
+              - microsoft,surface-pro-12in
               - qcom,x1p42100-crd
           - const: qcom,x1p42100
 

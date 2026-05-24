@@ -265,12 +265,12 @@
 
 	sound {
 		compatible = "qcom,x1e80100-sndcard";
-		model = "X1P42100-Surface12";
+		model = "X1P42100-MSFT-Sp12in";
 		audio-routing = "SpkrLeft IN", "WSA WSA_SPK1 OUT",
 				"SpkrRight IN", "WSA WSA_SPK2 OUT",
 				"VA DMIC0", "vdd-micb",
 				"VA DMIC1", "vdd-micb";
-
+	
 		va-dai-link {
 			link-name = "VA Capture";
 
@@ -1053,12 +1053,18 @@
 };
 
 &lpass_tlmm {
-	spkr_01_sd_n_active: spkr-01-sd-n-active-state {
+	spkr_0_sd_n_active: spkr-0-sd-n-active-state {
 		pins = "gpio12";
 		function = "gpio";
-		drive-strength = <2>;
+		drive-strength = <16>;
 		bias-disable;
-		output-low;
+	};
+
+	spkr_1_sd_n_active: spkr-1-sd-n-active-state {
+		pins = "gpio13";
+		function = "gpio";
+		drive-strength = <16>;
+		bias-disable;
 	};
 };
 
@@ -1237,7 +1243,7 @@
 };
 
 &swr0 {
-	pinctrl-0 = <&wsa_swr_active>, <&spkr_01_sd_n_active>;
+	pinctrl-0 = <&wsa_swr_active>;
 	pinctrl-names = "default";
 
 	status = "okay";
@@ -1245,25 +1251,29 @@
 	/* WSA8845, Left speaker */
 	left_spkr: speaker@0,0 {
 		compatible = "sdw20217020400";
+		pinctrl-0 = <&spkr_0_sd_n_active>;
+		pinctrl-names = "default";
 		reg = <0 0>;
 		reset-gpios = <&lpass_tlmm 12 GPIO_ACTIVE_LOW>;
 		#sound-dai-cells = <0>;
 		sound-name-prefix = "SpkrLeft";
 		vdd-1p8-supply = <&vreg_l15b_1p8>;
 		vdd-io-supply = <&vreg_l12b_1p2>;
-		qcom,port-mapping = <1 2 3 7 8 13>;
+		qcom,port-mapping = <1 2 3 7 9 11>;
 	};
 
 	/* WSA8845, Right speaker */
 	right_spkr: speaker@0,1 {
 		compatible = "sdw20217020400";
+		pinctrl-0 = <&spkr_1_sd_n_active>;
+		pinctrl-names = "default";
 		reg = <0 1>;
-		reset-gpios = <&lpass_tlmm 12 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&lpass_tlmm 13 GPIO_ACTIVE_LOW>;
 		#sound-dai-cells = <0>;
 		sound-name-prefix = "SpkrRight";
 		vdd-1p8-supply = <&vreg_l15b_1p8>;
 		vdd-io-supply = <&vreg_l12b_1p2>;
-		qcom,port-mapping = <4 5 6 7 9 13>;
+		qcom,port-mapping = <4 5 6 7 8 10>;
 	};
 };
 

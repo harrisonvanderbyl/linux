@@ -713,6 +713,11 @@
 	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcdxkmsucpurwa.mbn";
 };
 
+&iris {
+	firmware-name = "qcom/x1p42100/Microsoft/Surface12/qcvss8380_pa.mbn";
+	status = "okay";
+};
+
 &i2c8 {
 	clock-frequency = <1000000>;
 

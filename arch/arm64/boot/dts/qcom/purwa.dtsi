@@ -48,8 +48,6 @@
 	      <0 0x0acc6000 0 0x1000>,
 	      <0 0x0acca000 0 0x1000>,
 	      <0 0x0acb6000 0 0x1000>,
-	      <0 0x0ace4000 0 0x2000>,
-	      <0 0x0acec000 0 0x4000>,
 	      <0 0x0acf6000 0 0x1000>,
 	      <0 0x0acf7000 0 0x1000>,
 	      <0 0x0acf8000 0 0x1000>,
@@ -63,8 +61,6 @@
 		    "csid_lite0",
 		    "csid_lite1",
 		    "csid_wrapper",
-		    "csiphy0",
-		    "csiphy4",
 		    "csitpg0",
 		    "csitpg1",
 		    "csitpg2",
@@ -81,10 +77,6 @@
 		 <&camcc CAM_CC_CPAS_IFE_LITE_CLK>,
 		 <&camcc CAM_CC_CSID_CLK>,
 		 <&camcc CAM_CC_CSID_CSIPHY_RX_CLK>,
-		 <&camcc CAM_CC_CSIPHY0_CLK>,
-		 <&camcc CAM_CC_CSI0PHYTIMER_CLK>,
-		 <&camcc CAM_CC_CSIPHY4_CLK>,
-		 <&camcc CAM_CC_CSI4PHYTIMER_CLK>,
 		 <&gcc GCC_CAMERA_HF_AXI_CLK>,
 		 <&gcc GCC_CAMERA_SF_AXI_CLK>,
 		 <&camcc CAM_CC_IFE_0_CLK>,
@@ -103,10 +95,6 @@
 		      "cpas_vfe_lite",
 		      "csid",
 		      "csid_csiphy_rx",
-		      "csiphy0",
-		      "csiphy0_timer",
-		      "csiphy4",
-		      "csiphy4_timer",
 		      "gcc_axi_hf",
 		      "gcc_axi_sf",
 		      "vfe0",
@@ -121,8 +109,6 @@
 		     <GIC_SPI 431 IRQ_TYPE_EDGE_RISING>,
 		     <GIC_SPI 468 IRQ_TYPE_EDGE_RISING>,
 		     <GIC_SPI 359 IRQ_TYPE_EDGE_RISING>,
-		     <GIC_SPI 477 IRQ_TYPE_EDGE_RISING>,
-		     <GIC_SPI 122 IRQ_TYPE_EDGE_RISING>,
 		     <GIC_SPI 465 IRQ_TYPE_EDGE_RISING>,
 		     <GIC_SPI 469 IRQ_TYPE_EDGE_RISING>,
 		     <GIC_SPI 360 IRQ_TYPE_EDGE_RISING>;
@@ -132,8 +118,6 @@
 			  "csid2",
 			  "csid_lite0",
 			  "csid_lite1",
-			  "csiphy0",
-			  "csiphy4",
 			  "vfe0",
 			  "vfe_lite0",
 			  "vfe_lite1";
@@ -164,6 +148,8 @@
 
 	status = "disabled";
 
+	/delete-node/ camss_csiphy0_inep0;
+	/delete-node/ camss_csiphy4_inep0;
 	ports {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -172,12 +158,18 @@
 			reg = <0>;
 			#address-cells = <1>;
 			#size-cells = <0>;
+			camss_csiphy0_inep0: endpoint@0 {
+				reg = <0>;
+			};
 		};
 
 		port@1 {
 			reg = <1>;
 			#address-cells = <1>;
 			#size-cells = <0>;
+			camss_csiphy14_inep0: endpoint@0 {
+				reg = <0>;
+			};
 		};
 	};
 };

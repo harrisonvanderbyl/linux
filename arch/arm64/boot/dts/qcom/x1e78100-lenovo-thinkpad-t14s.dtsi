@@ -1441,8 +1441,8 @@
 		reset-n-pins {
 			pins = "gpio48";
 			function = "gpio";
-			output-high;
-			drive-strength = <16>;
+			drive-strength = <2>;
+			bias-disable;
 		};
 
 		int-n-pins {

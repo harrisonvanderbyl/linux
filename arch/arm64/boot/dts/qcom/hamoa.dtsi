@@ -739,24 +739,6 @@
 		};
 	};
 
-	csiphy_opp_table: opp-table-csiphy {
-		compatible = "operating-points-v2";
-
-		opp-300000000 {
-			opp-hz = /bits/ 64 <300000000>;
-			required-opps = <&rpmhpd_opp_low_svs_d1>;
-		};
-
-		opp-400000000 {
-			opp-hz = /bits/ 64 <400000000>;
-			required-opps = <&rpmhpd_opp_low_svs>;
-		};
-
-		opp-480000000 {
-			opp-hz = /bits/ 64 <480000000>;
-			required-opps = <&rpmhpd_opp_low_svs>;
-		};
-	};
 
 	qup_opp_table_100mhz: opp-table-qup100mhz {
 		compatible = "operating-points-v2";
@@ -4411,7 +4393,6 @@
 					compatible = "qcom,fastrpc";
 					qcom,glink-channels = "fastrpcglink-apps-dsp";
 					label = "adsp";
-					qcom,non-secure-domain;
 					#address-cells = <1>;
 					#size-cells = <0>;
 
@@ -5846,8 +5827,8 @@
 				 <&camcc CAM_CC_CSI0PHYTIMER_CLK>,
 				 <&camcc CAM_CC_CAMNOC_AXI_RT_CLK>,
 				 <&camcc CAM_CC_CPAS_AHB_CLK>;
-			clock-names = "csiphy",
-				      "csiphy_timer",
+			clock-names = "core",
+				      "timer",
 				      "camnoc_axi",
 				      "cpas_ahb";
 
@@ -5855,7 +5836,10 @@
 
 			interrupts = <GIC_SPI 477 IRQ_TYPE_EDGE_RISING>;
 
-			power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
+			power-domains = <&rpmhpd RPMHPD_MMCX>,
+                        <&rpmhpd RPMHPD_MX>;
+			power-domain-names = "mmcx",
+								"mx";
 
 			#phy-cells = <1>;
 
@@ -5918,8 +5902,8 @@
 				 <&camcc CAM_CC_CSI4PHYTIMER_CLK>,
 				 <&camcc CAM_CC_CAMNOC_AXI_RT_CLK>,
 				 <&camcc CAM_CC_CPAS_AHB_CLK>;
-			clock-names = "csiphy",
-				      "csiphy_timer",
+			clock-names = "core",
+				      "timer",
 				      "camnoc_axi",
 				      "cpas_ahb";
 
@@ -5927,7 +5911,10 @@
 
 			interrupts = <GIC_SPI 122 IRQ_TYPE_EDGE_RISING>;
 
-			power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
+			power-domains = <&rpmhpd RPMHPD_MMCX>,
+                        <&rpmhpd RPMHPD_MX>;
+			power-domain-names = "mmcx",
+								"mx";
 
 			#phy-cells = <1>;
 
